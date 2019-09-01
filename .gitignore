@@ -1,36 +1,42 @@
-ext/pybind11*.a
-*.exe
-*.lib
-*.cmake
-.DS_Store
-ext_build
-nanogui_resources.*
-build
-CMakeCache.txt
-CMakeFiles
-.ninja_deps
-.ninja_log
-build.ninja
-rules.ninja
-Makefile
-bin2c
-example[1-9]
-example_icons
-icons
-*~
-nanogui*.so
-nanogui*.pyd
-libnanogui.so
-libnanogui.dylib
-.vscode/
-# html documentation specific
-*.pyc
-docs/_build
-docs/_doxygen
-docs/api
+# C++
 
-# entypo update generation
-# this is it's own repo: https://github.com/svenevs/nanogui-entypo
-# should not ever be needed again unless there are new
-# icons added :)
-resources/nanogui-entypo
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Miscs
+
+# Mac OS X
+\.DS_Store
+
+build/
+\.vscode/
