@@ -32,34 +32,76 @@ public:
 
     void bindImage(GLuint imageId);
 
-    GLShader& imageShader() { return mShader; }
+    GLShader& imageShader() {
+        return mShader;
+    }
 
-    Vector2f positionF() const { return mPos.cast<float>(); }
-    Vector2f sizeF() const { return mSize.cast<float>(); }
+    Vector2f positionF() const {
+        return mPos.cast<float>();
+    }
+    Vector2f sizeF() const {
+        return mSize.cast<float>();
+    }
 
-    const Vector2i& imageSize() const { return mImageSize; }
-    Vector2i scaledImageSize() const { return (mScale * mImageSize.cast<float>()).cast<int>(); }
-    Vector2f imageSizeF() const { return mImageSize.cast<float>(); }
-    Vector2f scaledImageSizeF() const { return (mScale * mImageSize.cast<float>()); }
+    const Vector2i& imageSize() const {
+        return mImageSize;
+    }
+    Vector2i scaledImageSize() const {
+        return (mScale * mImageSize.cast<float>()).cast<int>();
+    }
+    Vector2f imageSizeF() const {
+        return mImageSize.cast<float>();
+    }
+    Vector2f scaledImageSizeF() const {
+        return (mScale * mImageSize.cast<float>());
+    }
 
-    const Vector2f& offset() const { return mOffset; }
-    void setOffset(const Vector2f& offset) { mOffset = offset; }
-    float scale() const { return mScale; }
-    void setScale(float scale) { mScale = scale > 0.01f ? scale : 0.01f; }
+    const Vector2f& offset() const {
+        return mOffset;
+    }
+    void setOffset(const Vector2f& offset) {
+        mOffset = offset;
+    }
+    float scale() const {
+        return mScale;
+    }
+    void setScale(float scale) {
+        mScale = scale > 0.01f ? scale : 0.01f;
+    }
 
-    bool fixedOffset() const { return mFixedOffset; }
-    void setFixedOffset(bool fixedOffset) { mFixedOffset = fixedOffset; }
-    bool fixedScale() const { return mFixedScale; }
-    void setFixedScale(bool fixedScale) { mFixedScale = fixedScale; }
+    bool fixedOffset() const {
+        return mFixedOffset;
+    }
+    void setFixedOffset(bool fixedOffset) {
+        mFixedOffset = fixedOffset;
+    }
+    bool fixedScale() const {
+        return mFixedScale;
+    }
+    void setFixedScale(bool fixedScale) {
+        mFixedScale = fixedScale;
+    }
 
-    float zoomSensitivity() const { return mZoomSensitivity; }
-    void setZoomSensitivity(float zoomSensitivity) { mZoomSensitivity = zoomSensitivity; }
+    float zoomSensitivity() const {
+        return mZoomSensitivity;
+    }
+    void setZoomSensitivity(float zoomSensitivity) {
+        mZoomSensitivity = zoomSensitivity;
+    }
 
-    float gridThreshold() const { return mGridThreshold; }
-    void setGridThreshold(float gridThreshold) { mGridThreshold = gridThreshold; }
+    float gridThreshold() const {
+        return mGridThreshold;
+    }
+    void setGridThreshold(float gridThreshold) {
+        mGridThreshold = gridThreshold;
+    }
 
-    float pixelInfoThreshold() const { return mPixelInfoThreshold; }
-    void setPixelInfoThreshold(float pixelInfoThreshold) { mPixelInfoThreshold = pixelInfoThreshold; }
+    float pixelInfoThreshold() const {
+        return mPixelInfoThreshold;
+    }
+    void setPixelInfoThreshold(float pixelInfoThreshold) {
+        mPixelInfoThreshold = pixelInfoThreshold;
+    }
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     void setPixelInfoCallback(const std::function<std::pair<std::string, Color>(const Vector2i&)>& callback) {
@@ -70,8 +112,12 @@ public:
     }
 #endif // DOXYGEN_SHOULD_SKIP_THIS
 
-    void setFontScaleFactor(float fontScaleFactor) { mFontScaleFactor = fontScaleFactor; }
-    float fontScaleFactor() const { return mFontScaleFactor; }
+    void setFontScaleFactor(float fontScaleFactor) {
+        mFontScaleFactor = fontScaleFactor;
+    }
+    float fontScaleFactor() const {
+        return mFontScaleFactor;
+    }
 
     // Image transformation functions.
 
@@ -116,8 +162,8 @@ public:
 
     bool keyboardEvent(int key, int scancode, int action, int modifiers) override;
     bool keyboardCharacterEvent(unsigned int codepoint) override;
-    bool mouseDragEvent(const Vector2i &p, const Vector2i &rel, int button, int modifiers) override;
-    bool scrollEvent(const Vector2i &p, const Vector2f &rel) override;
+    bool mouseDragEvent(const Vector2i& p, const Vector2i& rel, int button, int modifiers) override;
+    bool scrollEvent(const Vector2i& p, const Vector2f& rel) override;
 
     /// Function indicating whether the grid is currently visible.
     bool gridVisible() const;
@@ -167,6 +213,7 @@ private:
     // Image pixel data display members.
     std::function<std::pair<std::string, Color>(const Vector2i&)> mPixelInfoCallback;
     float mFontScaleFactor = 0.2f;
+
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

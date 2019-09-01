@@ -16,17 +16,18 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-Button::Button(Widget *parent, const std::string &caption, int icon)
-    : Widget(parent), mCaption(caption), mIcon(icon),
-      mIconPosition(IconPosition::LeftCentered), mPushed(false),
-      mFlags(NormalButton), mBackgroundColor(Color(0, 0)),
-      mTextColor(Color(0, 0)) { }
+Button::Button(Widget* parent, const std::string& caption, int icon) :
+    Widget(parent), mCaption(caption), mIcon(icon),
+    mIconPosition(IconPosition::LeftCentered), mPushed(false),
+    mFlags(NormalButton), mBackgroundColor(Color(0, 0)),
+    mTextColor(Color(0, 0)) {
+}
 
-Vector2i Button::preferredSize(NVGcontext *ctx) const {
+Vector2i Button::preferredSize(NVGcontext* ctx) const {
     int fontSize = mFontSize == -1 ? mTheme->mButtonFontSize : mFontSize;
     nvgFontSize(ctx, fontSize);
     nvgFontFace(ctx, "sans-bold");
-    float tw = nvgTextBounds(ctx, 0,0, mCaption.c_str(), nullptr, nullptr);
+    float tw = nvgTextBounds(ctx, 0, 0, mCaption.c_str(), nullptr, nullptr);
     float iw = 0.0f, ih = fontSize;
 
     if (mIcon) {
@@ -35,7 +36,7 @@ Vector2i Button::preferredSize(NVGcontext *ctx) const {
             nvgFontFace(ctx, "icons");
             nvgFontSize(ctx, ih);
             iw = nvgTextBounds(ctx, 0, 0, utf8(mIcon).data(), nullptr, nullptr)
-                + mSize.y() * 0.15f;
+                 + mSize.y() * 0.15f;
         } else {
             int w, h;
             ih *= 0.9f;
@@ -46,7 +47,7 @@ Vector2i Button::preferredSize(NVGcontext *ctx) const {
     return Vector2i((int)(tw + iw) + 20, fontSize + 10);
 }
 
-bool Button::mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers) {
+bool Button::mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers) {
     Widget::mouseButtonEvent(p, button, down, modifiers);
     /* Temporarily increase the reference count of the button in case the
        button causes the parent window to be destructed */
@@ -58,7 +59,7 @@ bool Button::mouseButtonEvent(const Vector2i &p, int button, bool down, int modi
             if (mFlags & RadioButton) {
                 if (mButtonGroup.empty()) {
                     for (auto widget : parent()->children()) {
-                        Button *b = dynamic_cast<Button *>(widget);
+                        Button* b = dynamic_cast<Button*>(widget);
                         if (b != this && b && (b->flags() & RadioButton) && b->mPushed) {
                             b->mPushed = false;
                             if (b->mChangeCallback)
@@ -77,7 +78,7 @@ bool Button::mouseButtonEvent(const Vector2i &p, int button, bool down, int modi
             }
             if (mFlags & PopupButton) {
                 for (auto widget : parent()->children()) {
-                    Button *b = dynamic_cast<Button *>(widget);
+                    Button* b = dynamic_cast<Button*>(widget);
                     if (b != this && b && (b->flags() & PopupButton) && b->mPushed) {
                         b->mPushed = false;
                         if (b->mChangeCallback)
@@ -103,7 +104,7 @@ bool Button::mouseButtonEvent(const Vector2i &p, int button, bool down, int modi
     return false;
 }
 
-void Button::draw(NVGcontext *ctx) {
+void Button::draw(NVGcontext* ctx) {
     Widget::draw(ctx);
 
     NVGcolor gradTop = mTheme->mButtonGradientTopUnfocused;
@@ -155,7 +156,7 @@ void Button::draw(NVGcontext *ctx) {
     int fontSize = mFontSize == -1 ? mTheme->mButtonFontSize : mFontSize;
     nvgFontSize(ctx, fontSize);
     nvgFontFace(ctx, "sans-bold");
-    float tw = nvgTextBounds(ctx, 0,0, mCaption.c_str(), nullptr, nullptr);
+    float tw = nvgTextBounds(ctx, 0, 0, mCaption.c_str(), nullptr, nullptr);
 
     Vector2f center = mPos.cast<float>() + mSize.cast<float>() * 0.5f;
     Vector2f textPos(center.x() - tw * 0.5f, center.y() - 1);
@@ -199,10 +200,10 @@ void Button::draw(NVGcontext *ctx) {
         }
 
         if (nvgIsFontIcon(mIcon)) {
-            nvgText(ctx, iconPos.x(), iconPos.y()+1, icon.data(), nullptr);
+            nvgText(ctx, iconPos.x(), iconPos.y() + 1, icon.data(), nullptr);
         } else {
             NVGpaint imgPaint = nvgImagePattern(ctx,
-                    iconPos.x(), iconPos.y() - ih/2, iw, ih, 0, mIcon, mEnabled ? 0.5f : 0.25f);
+                                                iconPos.x(), iconPos.y() - ih / 2, iw, ih, 0, mIcon, mEnabled ? 0.5f : 0.25f);
 
             nvgFillPaint(ctx, imgPaint);
             nvgFill(ctx);
@@ -218,18 +219,18 @@ void Button::draw(NVGcontext *ctx) {
     nvgText(ctx, textPos.x(), textPos.y() + 1, mCaption.c_str(), nullptr);
 }
 
-void Button::save(Serializer &s) const {
+void Button::save(Serializer& s) const {
     Widget::save(s);
     s.set("caption", mCaption);
     s.set("icon", mIcon);
-    s.set("iconPosition", (int) mIconPosition);
+    s.set("iconPosition", (int)mIconPosition);
     s.set("pushed", mPushed);
     s.set("flags", mFlags);
     s.set("backgroundColor", mBackgroundColor);
     s.set("textColor", mTextColor);
 }
 
-bool Button::load(Serializer &s) {
+bool Button::load(Serializer& s) {
     if (!Widget::load(s)) return false;
     if (!s.get("caption", mCaption)) return false;
     if (!s.get("icon", mIcon)) return false;

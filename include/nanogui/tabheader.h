@@ -30,23 +30,35 @@ NAMESPACE_BEGIN(nanogui)
  */
 class NANOGUI_EXPORT TabHeader : public Widget {
 public:
-    TabHeader(Widget *parent, const std::string &font = "sans-bold");
+    TabHeader(Widget* parent, const std::string& font = "sans-bold");
 
-    void setFont(const std::string& font) { mFont = font; }
-    const std::string& font() const { return mFont; }
-    bool overflowing() const { return mOverflowing; }
+    void setFont(const std::string& font) {
+        mFont = font;
+    }
+    const std::string& font() const {
+        return mFont;
+    }
+    bool overflowing() const {
+        return mOverflowing;
+    }
 
     /**
      * Sets the callable objects which is invoked when a tab button is pressed.
      * The argument provided to the callback is the index of the tab.
      */
-    void setCallback(const std::function<void(int)>& callback) { mCallback = callback; };
-    const std::function<void(int)>& callback() const { return mCallback; }
+    void setCallback(const std::function<void(int)>& callback) {
+        mCallback = callback;
+    };
+    const std::function<void(int)>& callback() const {
+        return mCallback;
+    }
 
     void setActiveTab(int tabIndex);
     int activeTab() const;
     bool isTabVisible(int index) const;
-    int tabCount() const { return (int) mTabButtons.size();  }
+    int tabCount() const {
+        return (int)mTabButtons.size();
+    }
 
     /// Inserts a tab at the end of the tabs collection.
     void addTab(const std::string& label);
@@ -95,7 +107,7 @@ public:
 
     virtual void performLayout(NVGcontext* ctx) override;
     virtual Vector2i preferredSize(NVGcontext* ctx) const override;
-    virtual bool mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers) override;
+    virtual bool mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers) override;
 
     virtual void draw(NVGcontext* ctx) override;
 
@@ -111,16 +123,24 @@ private:
 
         TabButton(TabHeader& header, const std::string& label);
 
-        void setLabel(const std::string& label) { mLabel = label; }
-        const std::string& label() const { return mLabel; }
-        void setSize(const Vector2i& size) { mSize = size; }
-        const Vector2i& size() const { return mSize; }
+        void setLabel(const std::string& label) {
+            mLabel = label;
+        }
+        const std::string& label() const {
+            return mLabel;
+        }
+        void setSize(const Vector2i& size) {
+            mSize = size;
+        }
+        const Vector2i& size() const {
+            return mSize;
+        }
 
         Vector2i preferredSize(NVGcontext* ctx) const;
         void calculateVisibleString(NVGcontext* ctx);
         void drawAtPosition(NVGcontext* ctx, const Vector2i& position, bool active);
-        void drawActiveBorderAt(NVGcontext * ctx, const Vector2i& position, float offset, const Color& color);
-        void drawInactiveBorderAt(NVGcontext * ctx, const Vector2i& position, float offset, const Color& color);
+        void drawActiveBorderAt(NVGcontext* ctx, const Vector2i& position, float offset, const Color& color);
+        void drawInactiveBorderAt(NVGcontext* ctx, const Vector2i& position, float offset, const Color& color);
 
     private:
         TabHeader* mHeader;
@@ -145,18 +165,36 @@ private:
 
     /// The location in which the Widget will be facing.
     enum class ClickLocation {
-        LeftControls, RightControls, TabButtons
+        LeftControls,
+        RightControls,
+        TabButtons
     };
 
-    TabIterator visibleBegin() { return std::next(mTabButtons.begin(), mVisibleStart); }
-    TabIterator visibleEnd() { return std::next(mTabButtons.begin(), mVisibleEnd); }
-    TabIterator activeIterator() { return std::next(mTabButtons.begin(), mActiveTab); }
-    TabIterator tabIterator(int index) { return std::next(mTabButtons.begin(), index); }
+    TabIterator visibleBegin() {
+        return std::next(mTabButtons.begin(), mVisibleStart);
+    }
+    TabIterator visibleEnd() {
+        return std::next(mTabButtons.begin(), mVisibleEnd);
+    }
+    TabIterator activeIterator() {
+        return std::next(mTabButtons.begin(), mActiveTab);
+    }
+    TabIterator tabIterator(int index) {
+        return std::next(mTabButtons.begin(), index);
+    }
 
-    ConstTabIterator visibleBegin() const { return std::next(mTabButtons.begin(), mVisibleStart); }
-    ConstTabIterator visibleEnd() const { return std::next(mTabButtons.begin(), mVisibleEnd); }
-    ConstTabIterator activeIterator() const { return std::next(mTabButtons.begin(), mActiveTab); }
-    ConstTabIterator tabIterator(int index) const { return std::next(mTabButtons.begin(), index); }
+    ConstTabIterator visibleBegin() const {
+        return std::next(mTabButtons.begin(), mVisibleStart);
+    }
+    ConstTabIterator visibleEnd() const {
+        return std::next(mTabButtons.begin(), mVisibleEnd);
+    }
+    ConstTabIterator activeIterator() const {
+        return std::next(mTabButtons.begin(), mActiveTab);
+    }
+    ConstTabIterator tabIterator(int index) const {
+        return std::next(mTabButtons.begin(), index);
+    }
 
     /// Given the beginning of the visible tabs, calculate the end.
     void calculateVisibleEnd();
@@ -174,6 +212,7 @@ private:
     bool mOverflowing = false;
 
     std::string mFont;
+
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

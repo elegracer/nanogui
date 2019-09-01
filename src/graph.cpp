@@ -16,18 +16,18 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-Graph::Graph(Widget *parent, const std::string &caption)
-    : Widget(parent), mCaption(caption) {
+Graph::Graph(Widget* parent, const std::string& caption) :
+    Widget(parent), mCaption(caption) {
     mBackgroundColor = Color(20, 128);
     mForegroundColor = Color(255, 192, 0, 128);
     mTextColor = Color(240, 192);
 }
 
-Vector2i Graph::preferredSize(NVGcontext *) const {
+Vector2i Graph::preferredSize(NVGcontext*) const {
     return Vector2i(180, 45);
 }
 
-void Graph::draw(NVGcontext *ctx) {
+void Graph::draw(NVGcontext* ctx) {
     Widget::draw(ctx);
 
     nvgBeginPath(ctx);
@@ -39,11 +39,11 @@ void Graph::draw(NVGcontext *ctx) {
         return;
 
     nvgBeginPath(ctx);
-    nvgMoveTo(ctx, mPos.x(), mPos.y()+mSize.y());
-    for (size_t i = 0; i < (size_t) mValues.size(); i++) {
+    nvgMoveTo(ctx, mPos.x(), mPos.y() + mSize.y());
+    for (size_t i = 0; i < (size_t)mValues.size(); i++) {
         float value = mValues[i];
-        float vx = mPos.x() + i * mSize.x() / (float) (mValues.size() - 1);
-        float vy = mPos.y() + (1-value) * mSize.y();
+        float vx = mPos.x() + i * mSize.x() / (float)(mValues.size() - 1);
+        float vy = mPos.y() + (1 - value) * mSize.y();
         nvgLineTo(ctx, vx, vy);
     }
 
@@ -82,7 +82,7 @@ void Graph::draw(NVGcontext *ctx) {
     nvgStroke(ctx);
 }
 
-void Graph::save(Serializer &s) const {
+void Graph::save(Serializer& s) const {
     Widget::save(s);
     s.set("caption", mCaption);
     s.set("header", mHeader);
@@ -93,7 +93,7 @@ void Graph::save(Serializer &s) const {
     s.set("values", mValues);
 }
 
-bool Graph::load(Serializer &s) {
+bool Graph::load(Serializer& s) {
     if (!Widget::load(s)) return false;
     if (!s.get("caption", mCaption)) return false;
     if (!s.get("header", mHeader)) return false;

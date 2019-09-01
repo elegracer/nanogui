@@ -23,18 +23,24 @@ NAMESPACE_BEGIN(nanogui)
  */
 class NANOGUI_EXPORT ProgressBar : public Widget {
 public:
-    ProgressBar(Widget *parent);
+    ProgressBar(Widget* parent);
 
-    float value() { return mValue; }
-    void setValue(float value) { mValue = value; }
+    float value() {
+        return mValue;
+    }
+    void setValue(float value) {
+        mValue = value;
+    }
 
-    virtual Vector2i preferredSize(NVGcontext *ctx) const override;
+    virtual Vector2i preferredSize(NVGcontext* ctx) const override;
     virtual void draw(NVGcontext* ctx) override;
 
-    virtual void save(Serializer &s) const override;
-    virtual bool load(Serializer &s) override;
+    virtual void save(Serializer& s) const override;
+    virtual bool load(Serializer& s) override;
+
 protected:
     float mValue;
+
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

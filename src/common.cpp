@@ -12,7 +12,7 @@
 #include <nanogui/screen.h>
 
 #if defined(_WIN32)
-#  include <windows.h>
+#include <windows.h>
 #endif
 
 #include <nanogui/opengl.h>
@@ -22,36 +22,35 @@
 #include <iostream>
 
 #if !defined(_WIN32)
-#  include <locale.h>
-#  include <signal.h>
-#  include <dirent.h>
+#include <locale.h>
+#include <signal.h>
+#include <dirent.h>
 #endif
 
 NAMESPACE_BEGIN(nanogui)
 
-extern std::map<GLFWwindow *, Screen *> __nanogui_screens;
+extern std::map<GLFWwindow*, Screen*> __nanogui_screens;
 
 #if defined(__APPLE__)
-  extern void disable_saved_application_state_osx();
+extern void disable_saved_application_state_osx();
 #endif
 
 void init() {
-    #if !defined(_WIN32)
-        /* Avoid locale-related number parsing issues */
-        setlocale(LC_NUMERIC, "C");
-    #endif
+#if !defined(_WIN32)
+    /* Avoid locale-related number parsing issues */
+    setlocale(LC_NUMERIC, "C");
+#endif
 
-    #if defined(__APPLE__)
-        disable_saved_application_state_osx();
-    #endif
+#if defined(__APPLE__)
+    disable_saved_application_state_osx();
+#endif
 
     glfwSetErrorCallback(
-        [](int error, const char *descr) {
+        [](int error, const char* descr) {
             if (error == GLFW_NOT_INITIALIZED)
                 return; /* Ignore */
             std::cerr << "GLFW error " << error << ": " << descr << std::endl;
-        }
-    );
+        });
 
     if (!glfwInit())
         throw std::runtime_error("Could not initialize GLFW!");
@@ -80,15 +79,14 @@ void mainloop(int refresh) {
                     std::this_thread::sleep_for(time);
                     glfwPostEmptyEvent();
                 }
-            }
-        );
+            });
     }
 
     try {
         while (mainloop_active) {
             int numScreens = 0;
             for (auto kv : __nanogui_screens) {
-                Screen *screen = kv.second;
+                Screen* screen = kv.second;
                 if (!screen->visible()) {
                     continue;
                 } else if (glfwWindowShouldClose(screen->glfwWindow())) {
@@ -111,7 +109,7 @@ void mainloop(int refresh) {
 
         /* Process events once more */
         glfwPollEvents();
-    } catch (const std::exception &e) {
+    } catch (const std::exception& e) {
         std::cerr << "Caught exception in main loop: " << e.what() << std::endl;
         leave();
     }
@@ -135,25 +133,46 @@ void shutdown() {
 std::array<char, 8> utf8(int c) {
     std::array<char, 8> seq;
     int n = 0;
-    if (c < 0x80) n = 1;
-    else if (c < 0x800) n = 2;
-    else if (c < 0x10000) n = 3;
-    else if (c < 0x200000) n = 4;
-    else if (c < 0x4000000) n = 5;
-    else if (c <= 0x7fffffff) n = 6;
+    if (c < 0x80)
+        n = 1;
+    else if (c < 0x800)
+        n = 2;
+    else if (c < 0x10000)
+        n = 3;
+    else if (c < 0x200000)
+        n = 4;
+    else if (c < 0x4000000)
+        n = 5;
+    else if (c <= 0x7fffffff)
+        n = 6;
     seq[n] = '\0';
     switch (n) {
-        case 6: seq[5] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x4000000;
-        case 5: seq[4] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x200000;
-        case 4: seq[3] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x10000;
-        case 3: seq[2] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0x800;
-        case 2: seq[1] = 0x80 | (c & 0x3f); c = c >> 6; c |= 0xc0;
-        case 1: seq[0] = c;
+    case 6:
+        seq[5] = 0x80 | (c & 0x3f);
+        c = c >> 6;
+        c |= 0x4000000;
+    case 5:
+        seq[4] = 0x80 | (c & 0x3f);
+        c = c >> 6;
+        c |= 0x200000;
+    case 4:
+        seq[3] = 0x80 | (c & 0x3f);
+        c = c >> 6;
+        c |= 0x10000;
+    case 3:
+        seq[2] = 0x80 | (c & 0x3f);
+        c = c >> 6;
+        c |= 0x800;
+    case 2:
+        seq[1] = 0x80 | (c & 0x3f);
+        c = c >> 6;
+        c |= 0xc0;
+    case 1: seq[0] = c;
     }
     return seq;
 }
 
-int __nanogui_get_image(NVGcontext *ctx, const std::string &name, uint8_t *data, uint32_t size) {
+int __nanogui_get_image(NVGcontext* ctx, const std::string& name, uint8_t* data, uint32_t size) {
     static std::map<std::string, int> iconCache;
     auto it = iconCache.find(name);
     if (it != iconCache.end())
@@ -166,15 +185,15 @@ int __nanogui_get_image(NVGcontext *ctx, const std::string &name, uint8_t *data,
 }
 
 std::vector<std::pair<int, std::string>>
-loadImageDirectory(NVGcontext *ctx, const std::string &path) {
-    std::vector<std::pair<int, std::string> > result;
+loadImageDirectory(NVGcontext* ctx, const std::string& path) {
+    std::vector<std::pair<int, std::string>> result;
 #if !defined(_WIN32)
-    DIR *dp = opendir(path.c_str());
+    DIR* dp = opendir(path.c_str());
     if (!dp)
         throw std::runtime_error("Could not open image directory!");
-    struct dirent *ep;
+    struct dirent* ep;
     while ((ep = readdir(dp))) {
-        const char *fname = ep->d_name;
+        const char* fname = ep->d_name;
 #else
     WIN32_FIND_DATA ffd;
     std::string searchPath = path + "/*.*";
@@ -182,7 +201,7 @@ loadImageDirectory(NVGcontext *ctx, const std::string &path) {
     if (handle == INVALID_HANDLE_VALUE)
         throw std::runtime_error("Could not open image directory!");
     do {
-        const char *fname = ffd.cFileName;
+        const char* fname = ffd.cFileName;
 #endif
         if (strstr(fname, "png") == nullptr)
             continue;
@@ -202,13 +221,13 @@ loadImageDirectory(NVGcontext *ctx, const std::string &path) {
     return result;
 }
 
-std::string file_dialog(const std::vector<std::pair<std::string, std::string>> &filetypes, bool save) {
+std::string file_dialog(const std::vector<std::pair<std::string, std::string>>& filetypes, bool save) {
     auto result = file_dialog(filetypes, save, false);
     return result.empty() ? "" : result.front();
 }
 
 #if !defined(__APPLE__)
-std::vector<std::string> file_dialog(const std::vector<std::pair<std::string, std::string>> &filetypes, bool save, bool multiple) {
+std::vector<std::string> file_dialog(const std::vector<std::pair<std::string, std::string>>& filetypes, bool save, bool multiple) {
     static const int FILE_DIALOG_MAX_BUFFER = 16384;
     if (save && multiple) {
         throw std::invalid_argument("save and multiple must not both be true.");
@@ -313,7 +332,7 @@ std::vector<std::string> file_dialog(const std::vector<std::pair<std::string, st
     for (auto pair : filetypes)
         cmd += "\"*." + pair.first + "\" ";
     cmd += "\"";
-    FILE *output = popen(cmd.c_str(), "r");
+    FILE* output = popen(cmd.c_str(), "r");
     if (output == nullptr)
         throw std::runtime_error("popen() failed -- could not launch zenity!");
     while (fgets(buffer, FILE_DIALOG_MAX_BUFFER, output) != NULL)
@@ -349,7 +368,7 @@ void Object::decRef(bool dealloc) const noexcept {
     }
 }
 
-Object::~Object() { }
+Object::~Object() {
+}
 
 NAMESPACE_END(nanogui)
-

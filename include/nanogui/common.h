@@ -15,14 +15,14 @@
 #pragma once
 
 #if defined(_WIN32)
-#  if defined(NANOGUI_BUILD)
-     /* Quench a few warnings on when compiling NanoGUI on Windows */
-#    pragma warning(disable : 4127) // warning C4127: conditional expression is constant
-#    pragma warning(disable : 4244) // warning C4244: conversion from X to Y, possible loss of data
-#  endif
-#  pragma warning(disable : 4251) // warning C4251: class X needs to have dll-interface to be used by clients of class Y
-#  pragma warning(disable : 4714) // warning C4714: function X marked as __forceinline not inlined
-#  pragma warning(disable : 4127) // warning C4127: conditional expression is constant
+#if defined(NANOGUI_BUILD)
+/* Quench a few warnings on when compiling NanoGUI on Windows */
+#pragma warning(disable : 4127) // warning C4127: conditional expression is constant
+#pragma warning(disable : 4244) // warning C4244: conversion from X to Y, possible loss of data
+#endif
+#pragma warning(disable : 4251) // warning C4251: class X needs to have dll-interface to be used by clients of class Y
+#pragma warning(disable : 4714) // warning C4714: function X marked as __forceinline not inlined
+#pragma warning(disable : 4127) // warning C4127: conditional expression is constant
 #endif
 
 #include <Eigen/Core>
@@ -34,7 +34,7 @@
 //#define NANOGUI_SHOW_WIDGET_BOUNDS 1
 
 #if !defined(NAMESPACE_BEGIN) || defined(DOXYGEN_DOCUMENTATION_BUILD)
-    /**
+/**
      * \brief Convenience macro for namespace declarations
      *
      * The macro ``NAMESPACE_BEGIN(nanogui)`` will expand to ``namespace
@@ -46,10 +46,10 @@
      * \param name
      *     The name of the namespace scope to open
      */
-    #define NAMESPACE_BEGIN(name) namespace name {
+#define NAMESPACE_BEGIN(name) namespace name {
 #endif
 #if !defined(NAMESPACE_END) || defined(DOXYGEN_DOCUMENTATION_BUILD)
-    /**
+/**
      * \brief Convenience macro for namespace declarations
      *
      * Closes a namespace (counterpart to ``NAMESPACE_BEGIN``)
@@ -58,37 +58,37 @@
      * \param name
      *     The name of the namespace scope to close
      */
-    #define NAMESPACE_END(name) }
+#define NAMESPACE_END(name) }
 #endif
 
 #if defined(NANOGUI_SHARED)
-#  if defined(_WIN32)
-#    if defined(NANOGUI_BUILD)
-#      define NANOGUI_EXPORT __declspec(dllexport)
-#    else
-#      define NANOGUI_EXPORT __declspec(dllimport)
-#    endif
-#  elif defined(NANOGUI_BUILD)
-#    define NANOGUI_EXPORT __attribute__ ((visibility("default")))
-#  else
-#    define NANOGUI_EXPORT
-#  endif
+#if defined(_WIN32)
+#if defined(NANOGUI_BUILD)
+#define NANOGUI_EXPORT __declspec(dllexport)
 #else
-     /**
+#define NANOGUI_EXPORT __declspec(dllimport)
+#endif
+#elif defined(NANOGUI_BUILD)
+#define NANOGUI_EXPORT __attribute__((visibility("default")))
+#else
+#define NANOGUI_EXPORT
+#endif
+#else
+/**
       * If the build flag ``NANOGUI_SHARED`` is defined, this directive will expand
       * to be the platform specific shared library import / export command depending
       * on the compilation stage.  If undefined, it expands to nothing. **Do not**
       * define this directive on your own.
       */
-#    define NANOGUI_EXPORT
+#define NANOGUI_EXPORT
 #endif
 
 /* Force usage of discrete GPU on laptops (macro must be invoked in main application) */
 #if defined(_WIN32) && !defined(DOXYGEN_DOCUMENTATION_BUILD)
-#define NANOGUI_FORCE_DISCRETE_GPU() \
-    extern "C" { \
-        __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1; \
-        __declspec(dllexport) int NvOptimusEnablement = 1; \
+#define NANOGUI_FORCE_DISCRETE_GPU()                                    \
+    extern "C" {                                                        \
+    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1; \
+    __declspec(dllexport) int NvOptimusEnablement = 1;                  \
     }
 #else
 /**
@@ -101,8 +101,10 @@
 // These will produce broken links in the docs build
 #if !defined(DOXYGEN_SHOULD_SKIP_THIS)
 
-struct NVGcontext { /* Opaque handle type, never de-referenced within NanoGUI */ };
-struct GLFWwindow { /* Opaque handle type, never de-referenced within NanoGUI */ };
+struct NVGcontext { /* Opaque handle type, never de-referenced within NanoGUI */
+};
+struct GLFWwindow { /* Opaque handle type, never de-referenced within NanoGUI */
+};
 
 struct NVGcolor;
 struct NVGglyphPosition;
@@ -112,10 +114,10 @@ struct GLFWcursor;
 
 // Define command key for windows/mac/linux
 #if defined(__APPLE__) || defined(DOXYGEN_DOCUMENTATION_BUILD)
-    /// If on OSX, maps to ``GLFW_MOD_SUPER``.  Otherwise, maps to ``GLFW_MOD_CONTROL``.
-    #define SYSTEM_COMMAND_MOD GLFW_MOD_SUPER
+/// If on OSX, maps to ``GLFW_MOD_SUPER``.  Otherwise, maps to ``GLFW_MOD_CONTROL``.
+#define SYSTEM_COMMAND_MOD GLFW_MOD_SUPER
 #else
-    #define SYSTEM_COMMAND_MOD GLFW_MOD_CONTROL
+#define SYSTEM_COMMAND_MOD GLFW_MOD_CONTROL
 #endif
 
 NAMESPACE_BEGIN(nanogui)
@@ -190,9 +192,12 @@ using MatrixXu = Eigen::Matrix<uint32_t, Eigen::Dynamic, Eigen::Dynamic>;
  */
 class Color : public Eigen::Vector4f {
     typedef Eigen::Vector4f Base;
+
 public:
     /// Default constructor: represents black (``r, g, b, a = 0``)
-    Color() : Color(0, 0, 0, 0) {}
+    Color() :
+        Color(0, 0, 0, 0) {
+    }
 
     /**
      * Makes an exact copy of the data represented by the input parameter.
@@ -200,7 +205,9 @@ public:
      * \param color
      * The four dimensional float vector being copied.
      */
-    Color(const Eigen::Vector4f &color) : Eigen::Vector4f(color) { }
+    Color(const Eigen::Vector4f& color) :
+        Eigen::Vector4f(color) {
+    }
 
     /**
      * Copies (x, y, z) from the input vector, and uses the value specified by
@@ -212,8 +219,9 @@ public:
      * \param alpha
      * The value to set this object's alpha component to.
      */
-    Color(const Eigen::Vector3f &color, float alpha)
-        : Color(color(0), color(1), color(2), alpha) { }
+    Color(const Eigen::Vector3f& color, float alpha) :
+        Color(color(0), color(1), color(2), alpha) {
+    }
 
     /**
      * Copies (x, y, z) from the input vector, casted as floats first and then
@@ -227,8 +235,9 @@ public:
      * \param alpha
      * The value to set this object's alpha component to, will be divided by ``255.0``.
      */
-    Color(const Eigen::Vector3i &color, int alpha)
-        : Color(color.cast<float>() / 255.f, alpha / 255.f) { }
+    Color(const Eigen::Vector3i& color, int alpha) :
+        Color(color.cast<float>() / 255.f, alpha / 255.f) {
+    }
 
     /**
      * Copies (x, y, z) from the input vector, and sets the alpha of this color
@@ -237,7 +246,9 @@ public:
      * \param color
      * The three dimensional float vector being copied.
      */
-    Color(const Eigen::Vector3f &color) : Color(color, 1.0f) {}
+    Color(const Eigen::Vector3f& color) :
+        Color(color, 1.0f) {
+    }
 
     /**
      * Copies (x, y, z) from the input vector, casting to floats and dividing by
@@ -246,8 +257,9 @@ public:
      * \param color
      * The three dimensional integer vector being copied, will be divided by ``255.0``.
      */
-    Color(const Eigen::Vector3i &color)
-        : Color((Vector3f)(color.cast<float>() / 255.f)) { }
+    Color(const Eigen::Vector3i& color) :
+        Color((Vector3f)(color.cast<float>() / 255.f)) {
+    }
 
     /**
      * Copies (x, y, z, w) from the input vector, casting to floats and dividing
@@ -256,8 +268,9 @@ public:
      * \param color
      * The three dimensional integer vector being copied, will be divided by ``255.0``.
      */
-    Color(const Eigen::Vector4i &color)
-        : Color((Vector4f)(color.cast<float>() / 255.f)) { }
+    Color(const Eigen::Vector4i& color) :
+        Color((Vector4f)(color.cast<float>() / 255.f)) {
+    }
 
     /**
      * Creates the Color ``(intensity, intensity, intensity, alpha)``.
@@ -268,8 +281,9 @@ public:
      * \param alpha
      * The alpha component of the color.
      */
-    Color(float intensity, float alpha)
-        : Color(Vector3f::Constant(intensity), alpha) { }
+    Color(float intensity, float alpha) :
+        Color(Vector3f::Constant(intensity), alpha) {
+    }
 
     /**
      * Creates the Color ``(intensity, intensity, intensity, alpha) / 255.0``.
@@ -281,8 +295,9 @@ public:
      * \param alpha
      * The alpha component of the color, will be divided by ``255.0``.
      */
-    Color(int intensity, int alpha)
-        : Color(Vector3i::Constant(intensity), alpha) { }
+    Color(int intensity, int alpha) :
+        Color(Vector3i::Constant(intensity), alpha) {
+    }
 
     /**
      * Explicit constructor: creates the Color ``(r, g, b, a)``.
@@ -299,7 +314,9 @@ public:
      * \param a
      * The alpha component of the color.
      */
-    Color(float r, float g, float b, float a) : Color(Vector4f(r, g, b, a)) { }
+    Color(float r, float g, float b, float a) :
+        Color(Vector4f(r, g, b, a)) {
+    }
 
     /**
      * Explicit constructor: creates the Color ``(r, g, b, a) / 255.0``.
@@ -317,30 +334,47 @@ public:
      * \param a
      * The alpha component of the color, will be divided by ``255.0``.
      */
-    Color(int r, int g, int b, int a) : Color(Vector4i(r, g, b, a)) { }
+    Color(int r, int g, int b, int a) :
+        Color(Vector4i(r, g, b, a)) {
+    }
 
     /// Construct a color vector from MatrixBase (needed to play nice with Eigen)
-    template <typename Derived> Color(const Eigen::MatrixBase<Derived>& p)
-        : Base(p) { }
+    template <typename Derived>
+    Color(const Eigen::MatrixBase<Derived>& p) :
+        Base(p) {
+    }
 
     /// Assign a color vector from MatrixBase (needed to play nice with Eigen)
-    template <typename Derived> Color &operator=(const Eigen::MatrixBase<Derived>& p) {
+    template <typename Derived>
+    Color& operator=(const Eigen::MatrixBase<Derived>& p) {
         this->Base::operator=(p);
         return *this;
     }
 
     /// Return a reference to the red channel
-    float &r() { return x(); }
+    float& r() {
+        return x();
+    }
     /// Return a reference to the red channel (const version)
-    const float &r() const { return x(); }
+    const float& r() const {
+        return x();
+    }
     /// Return a reference to the green channel
-    float &g() { return y(); }
+    float& g() {
+        return y();
+    }
     /// Return a reference to the green channel (const version)
-    const float &g() const { return y(); }
+    const float& g() const {
+        return y();
+    }
     /// Return a reference to the blue channel
-    float &b() { return z(); }
+    float& b() {
+        return z();
+    }
     /// Return a reference to the blue channel (const version)
-    const float &b() const { return z(); }
+    const float& b() const {
+        return z();
+    }
 
     /**
      * Computes the luminance as ``l = 0.299r + 0.587g + 0.144b + 0.0a``.  If
@@ -354,7 +388,8 @@ public:
     }
 
     /// Allows for conversion between this Color and NanoVG's representation.
-    inline operator const NVGcolor &() const;
+    inline operator const NVGcolor&() const;
+
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
@@ -363,7 +398,8 @@ public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 /* Forward declarations */
-template <typename T> class ref;
+template <typename T>
+class ref;
 class AdvancedGridLayout;
 class BoxLayout;
 class Button;
@@ -472,7 +508,7 @@ extern NANOGUI_EXPORT bool active();
  *     at whatever folder they were in when they close this one.
  */
 extern NANOGUI_EXPORT std::string
-file_dialog(const std::vector<std::pair<std::string, std::string>> &filetypes,
+file_dialog(const std::vector<std::pair<std::string, std::string>>& filetypes,
             bool save);
 
 /**
@@ -491,7 +527,7 @@ file_dialog(const std::vector<std::pair<std::string, std::string>> &filetypes,
  *     files at once. May not be simultaneously true with \p save.
  */
 extern NANOGUI_EXPORT std::vector<std::string>
-file_dialog(const std::vector<std::pair<std::string, std::string>> &filetypes,
+file_dialog(const std::vector<std::pair<std::string, std::string>>& filetypes,
             bool save, bool multiple);
 
 #if defined(__APPLE__) || defined(DOXYGEN_DOCUMENTATION_BUILD)
@@ -519,12 +555,12 @@ extern NANOGUI_EXPORT std::array<char, 8> utf8(int c);
 
 /// Load a directory of PNG images and upload them to the GPU (suitable for use with ImagePanel)
 extern NANOGUI_EXPORT std::vector<std::pair<int, std::string>>
-    loadImageDirectory(NVGcontext *ctx, const std::string &path);
+loadImageDirectory(NVGcontext* ctx, const std::string& path);
 
 /// Convenience function for instanting a PNG icon from the application's data segment (via bin2c)
 #define nvgImageIcon(ctx, name) nanogui::__nanogui_get_image(ctx, #name, name##_png, name##_png_size)
 
 /// Helper function used by nvgImageIcon
-extern NANOGUI_EXPORT int __nanogui_get_image(NVGcontext *ctx, const std::string &name, uint8_t *data, uint32_t size);
+extern NANOGUI_EXPORT int __nanogui_get_image(NVGcontext* ctx, const std::string& name, uint8_t* data, uint32_t size);
 
 NAMESPACE_END(nanogui)

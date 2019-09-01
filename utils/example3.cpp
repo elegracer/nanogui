@@ -14,17 +14,17 @@
 // GLFW
 //
 #if defined(NANOGUI_GLAD)
-    #if defined(NANOGUI_SHARED) && !defined(GLAD_GLAPI_EXPORT)
-        #define GLAD_GLAPI_EXPORT
-    #endif
+#if defined(NANOGUI_SHARED) && !defined(GLAD_GLAPI_EXPORT)
+#define GLAD_GLAPI_EXPORT
+#endif
 
-    #include <glad/glad.h>
+#include <glad/glad.h>
 #else
-    #if defined(__APPLE__)
-        #define GLFW_INCLUDE_GLCOREARB
-    #else
-        #define GL_GLEXT_PROTOTYPES
-    #endif
+#if defined(__APPLE__)
+#define GLFW_INCLUDE_GLCOREARB
+#else
+#define GL_GLEXT_PROTOTYPES
+#endif
 #endif
 
 #include <GLFW/glfw3.h>
@@ -48,10 +48,9 @@ std::string strval = "A string";
 test_enum enumval = Item2;
 Color colval(0.5f, 0.5f, 0.7f, 1.f);
 
-Screen *screen = nullptr;
+Screen* screen = nullptr;
 
-int main(int /* argc */, char ** /* argv */) {
-
+int main(int /* argc */, char** /* argv */) {
     glfwInit();
 
     glfwSetTime(0);
@@ -80,7 +79,7 @@ int main(int /* argc */, char ** /* argv */) {
     glfwMakeContextCurrent(window);
 
 #if defined(NANOGUI_GLAD)
-    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         throw std::runtime_error("Could not initialize GLAD!");
     glGetError(); // pull and ignore unhandled errors like GL_INVALID_ENUM
 #endif
@@ -100,7 +99,7 @@ int main(int /* argc */, char ** /* argv */) {
 
     // Create nanogui gui
     bool enabled = true;
-    FormHelper *gui = new FormHelper(screen);
+    FormHelper* gui = new FormHelper(screen);
     ref<Window> nanoguiWindow = gui->addWindow(Eigen::Vector2i(10, 10), "Form helper example");
     gui->addGroup("Basic types");
     gui->addVariable("bool", bvar)->setTooltip("Test tooltip.");
@@ -112,64 +111,58 @@ int main(int /* argc */, char ** /* argv */) {
     gui->addVariable("double", dvar)->setSpinnable(true);
 
     gui->addGroup("Complex types");
-    gui->addVariable("Enumeration", enumval, enabled)->setItems({ "Item 1", "Item 2", "Item 3" });
+    gui->addVariable("Enumeration", enumval, enabled)->setItems({"Item 1", "Item 2", "Item 3"});
     gui->addVariable("Color", colval)
-       ->setFinalCallback([](const Color &c) {
-             std::cout << "ColorPicker Final Callback: ["
-                       << c.r() << ", "
-                       << c.g() << ", "
-                       << c.b() << ", "
-                       << c.w() << "]" << std::endl;
-         });
+        ->setFinalCallback([](const Color& c) {
+            std::cout << "ColorPicker Final Callback: ["
+                      << c.r() << ", "
+                      << c.g() << ", "
+                      << c.b() << ", "
+                      << c.w() << "]" << std::endl;
+        });
 
     gui->addGroup("Other widgets");
-    gui->addButton("A button", []() { std::cout << "Button pressed." << std::endl; })->setTooltip("Testing a much longer tooltip, that will wrap around to new lines multiple times.");;
+    gui->addButton("A button", []() { std::cout << "Button pressed." << std::endl; })->setTooltip("Testing a much longer tooltip, that will wrap around to new lines multiple times.");
+    ;
 
     screen->setVisible(true);
     screen->performLayout();
     nanoguiWindow->center();
 
     glfwSetCursorPosCallback(window,
-            [](GLFWwindow *, double x, double y) {
-            screen->cursorPosCallbackEvent(x, y);
-        }
-    );
+                             [](GLFWwindow*, double x, double y) {
+                                 screen->cursorPosCallbackEvent(x, y);
+                             });
 
     glfwSetMouseButtonCallback(window,
-        [](GLFWwindow *, int button, int action, int modifiers) {
-            screen->mouseButtonCallbackEvent(button, action, modifiers);
-        }
-    );
+                               [](GLFWwindow*, int button, int action, int modifiers) {
+                                   screen->mouseButtonCallbackEvent(button, action, modifiers);
+                               });
 
     glfwSetKeyCallback(window,
-        [](GLFWwindow *, int key, int scancode, int action, int mods) {
-            screen->keyCallbackEvent(key, scancode, action, mods);
-        }
-    );
+                       [](GLFWwindow*, int key, int scancode, int action, int mods) {
+                           screen->keyCallbackEvent(key, scancode, action, mods);
+                       });
 
     glfwSetCharCallback(window,
-        [](GLFWwindow *, unsigned int codepoint) {
-            screen->charCallbackEvent(codepoint);
-        }
-    );
+                        [](GLFWwindow*, unsigned int codepoint) {
+                            screen->charCallbackEvent(codepoint);
+                        });
 
     glfwSetDropCallback(window,
-        [](GLFWwindow *, int count, const char **filenames) {
-            screen->dropCallbackEvent(count, filenames);
-        }
-    );
+                        [](GLFWwindow*, int count, const char** filenames) {
+                            screen->dropCallbackEvent(count, filenames);
+                        });
 
     glfwSetScrollCallback(window,
-        [](GLFWwindow *, double x, double y) {
-            screen->scrollCallbackEvent(x, y);
-       }
-    );
+                          [](GLFWwindow*, double x, double y) {
+                              screen->scrollCallbackEvent(x, y);
+                          });
 
     glfwSetFramebufferSizeCallback(window,
-        [](GLFWwindow *, int width, int height) {
-            screen->resizeCallbackEvent(width, height);
-        }
-    );
+                                   [](GLFWwindow*, int width, int height) {
+                                       screen->resizeCallbackEvent(width, height);
+                                   });
 
     // Game loop
     while (!glfwWindowShouldClose(window)) {

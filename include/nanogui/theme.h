@@ -28,7 +28,7 @@ NAMESPACE_BEGIN(nanogui)
  */
 class NANOGUI_EXPORT Theme : public Object {
 public:
-    Theme(NVGcontext *ctx);
+    Theme(NVGcontext* ctx);
 
     /* Fonts */
     /// The standard font face (default: ``"sans"`` from ``resources/roboto_regular.ttf``).
@@ -225,7 +225,7 @@ public:
 
 protected:
     /// Default destructor does nothing; allows for inheritance.
-    virtual ~Theme() { };
+    virtual ~Theme(){};
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

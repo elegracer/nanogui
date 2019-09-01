@@ -16,15 +16,15 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-CheckBox::CheckBox(Widget *parent, const std::string &caption,
-                   const std::function<void(bool) > &callback)
-    : Widget(parent), mCaption(caption), mPushed(false), mChecked(false),
-      mCallback(callback) {
-
-    mIconExtraScale = 1.2f;// widget override
+CheckBox::CheckBox(Widget* parent, const std::string& caption,
+                   const std::function<void(bool)>& callback) :
+    Widget(parent),
+    mCaption(caption), mPushed(false), mChecked(false),
+    mCallback(callback) {
+    mIconExtraScale = 1.2f; // widget override
 }
 
-bool CheckBox::mouseButtonEvent(const Vector2i &p, int button, bool down,
+bool CheckBox::mouseButtonEvent(const Vector2i& p, int button, bool down,
                                 int modifiers) {
     Widget::mouseButtonEvent(p, button, down, modifiers);
     if (!mEnabled)
@@ -46,18 +46,17 @@ bool CheckBox::mouseButtonEvent(const Vector2i &p, int button, bool down,
     return false;
 }
 
-Vector2i CheckBox::preferredSize(NVGcontext *ctx) const {
+Vector2i CheckBox::preferredSize(NVGcontext* ctx) const {
     if (mFixedSize != Vector2i::Zero())
         return mFixedSize;
     nvgFontSize(ctx, fontSize());
     nvgFontFace(ctx, "sans");
     return Vector2i(
-        nvgTextBounds(ctx, 0, 0, mCaption.c_str(), nullptr, nullptr) +
-            1.8f * fontSize(),
+        nvgTextBounds(ctx, 0, 0, mCaption.c_str(), nullptr, nullptr) + 1.8f * fontSize(),
         fontSize() * 1.3f);
 }
 
-void CheckBox::draw(NVGcontext *ctx) {
+void CheckBox::draw(NVGcontext* ctx) {
     Widget::draw(ctx);
 
     nvgFontSize(ctx, fontSize());
@@ -82,8 +81,7 @@ void CheckBox::draw(NVGcontext *ctx) {
     if (mChecked) {
         nvgFontSize(ctx, mSize.y() * icon_scale());
         nvgFontFace(ctx, "icons");
-        nvgFillColor(ctx, mEnabled ? mTheme->mIconColor
-                                   : mTheme->mDisabledTextColor);
+        nvgFillColor(ctx, mEnabled ? mTheme->mIconColor : mTheme->mDisabledTextColor);
         nvgTextAlign(ctx, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
         nvgText(ctx, mPos.x() + mSize.y() * 0.5f + 1,
                 mPos.y() + mSize.y() * 0.5f, utf8(mTheme->mCheckBoxIcon).data(),
@@ -91,14 +89,14 @@ void CheckBox::draw(NVGcontext *ctx) {
     }
 }
 
-void CheckBox::save(Serializer &s) const {
+void CheckBox::save(Serializer& s) const {
     Widget::save(s);
     s.set("caption", mCaption);
     s.set("pushed", mPushed);
     s.set("checked", mChecked);
 }
 
-bool CheckBox::load(Serializer &s) {
+bool CheckBox::load(Serializer& s) {
     if (!Widget::load(s)) return false;
     if (!s.get("caption", mCaption)) return false;
     if (!s.get("pushed", mPushed)) return false;

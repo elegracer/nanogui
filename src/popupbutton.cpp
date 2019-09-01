@@ -16,26 +16,25 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-PopupButton::PopupButton(Widget *parent, const std::string &caption, int buttonIcon)
-    : Button(parent, caption, buttonIcon) {
-
+PopupButton::PopupButton(Widget* parent, const std::string& caption, int buttonIcon) :
+    Button(parent, caption, buttonIcon) {
     mChevronIcon = mTheme->mPopupChevronRightIcon;
 
     setFlags(Flags::ToggleButton | Flags::PopupButton);
 
-    Window *parentWindow = window();
+    Window* parentWindow = window();
     mPopup = new Popup(parentWindow->parent(), window());
     mPopup->setSize(Vector2i(320, 250));
     mPopup->setVisible(false);
 
-    mIconExtraScale = 0.8f;// widget override
+    mIconExtraScale = 0.8f; // widget override
 }
 
 PopupButton::~PopupButton() {
     mPopup->setVisible(false);
 }
 
-Vector2i PopupButton::preferredSize(NVGcontext *ctx) const {
+Vector2i PopupButton::preferredSize(NVGcontext* ctx) const {
     return Button::preferredSize(ctx) + Vector2i(15, 0);
 }
 
@@ -68,12 +67,12 @@ void PopupButton::draw(NVGcontext* ctx) {
     }
 }
 
-void PopupButton::performLayout(NVGcontext *ctx) {
+void PopupButton::performLayout(NVGcontext* ctx) {
     Widget::performLayout(ctx);
 
-    const Window *parentWindow = window();
+    const Window* parentWindow = window();
 
-    int posY = absolutePosition().y() - parentWindow->position().y() + mSize.y() /2;
+    int posY = absolutePosition().y() - parentWindow->position().y() + mSize.y() / 2;
     if (mPopup->side() == Popup::Right)
         mPopup->setAnchorPos(Vector2i(parentWindow->width() + 15, posY));
     else
@@ -81,21 +80,19 @@ void PopupButton::performLayout(NVGcontext *ctx) {
 }
 
 void PopupButton::setSide(Popup::Side side) {
-    if (mPopup->side() == Popup::Right &&
-        mChevronIcon == mTheme->mPopupChevronRightIcon)
+    if (mPopup->side() == Popup::Right && mChevronIcon == mTheme->mPopupChevronRightIcon)
         setChevronIcon(mTheme->mPopupChevronLeftIcon);
-    else if (mPopup->side() == Popup::Left &&
-             mChevronIcon == mTheme->mPopupChevronLeftIcon)
+    else if (mPopup->side() == Popup::Left && mChevronIcon == mTheme->mPopupChevronLeftIcon)
         setChevronIcon(mTheme->mPopupChevronRightIcon);
     mPopup->setSide(side);
 }
 
-void PopupButton::save(Serializer &s) const {
+void PopupButton::save(Serializer& s) const {
     Button::save(s);
     s.set("chevronIcon", mChevronIcon);
 }
 
-bool PopupButton::load(Serializer &s) {
+bool PopupButton::load(Serializer& s) {
     if (!Button::load(s))
         return false;
     if (!s.get("chevronIcon", mChevronIcon))

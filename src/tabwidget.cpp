@@ -23,11 +23,10 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-TabWidget::TabWidget(Widget* parent)
-    : Widget(parent)
-    , mHeader(new TabHeader(nullptr)) // create using nullptr, add children below
-    , mContent(new StackedWidget(nullptr)) {
-
+TabWidget::TabWidget(Widget* parent) :
+    Widget(parent), mHeader(new TabHeader(nullptr)) // create using nullptr, add children below
+    ,
+    mContent(new StackedWidget(nullptr)) {
     // since TabWidget::addChild is going to throw an exception to prevent
     // mis-use of this class, add the child directly
     Widget::addChild(childCount(), mHeader);
@@ -40,13 +39,12 @@ TabWidget::TabWidget(Widget* parent)
     });
 }
 
-void TabWidget::addChild(int /*index*/, Widget * /*widget*/) {
+void TabWidget::addChild(int /*index*/, Widget* /*widget*/) {
     // there may only be two children: mHeader and mContent, created in the constructor
     throw std::runtime_error(
         "TabWidget: do not add children directly to the TabWidget, create tabs "
         "and add children to the tabs.  See TabWidget class documentation for "
-        "example usage."
-    );
+        "example usage.");
 }
 
 void TabWidget::setActiveTab(int tabIndex) {
@@ -64,21 +62,21 @@ int TabWidget::tabCount() const {
     return mHeader->tabCount();
 }
 
-Widget* TabWidget::createTab(int index, const std::string &label) {
+Widget* TabWidget::createTab(int index, const std::string& label) {
     Widget* tab = new Widget(nullptr);
     addTab(index, label, tab);
     return tab;
 }
 
-Widget* TabWidget::createTab(const std::string &label) {
+Widget* TabWidget::createTab(const std::string& label) {
     return createTab(tabCount(), label);
 }
 
-void TabWidget::addTab(const std::string &name, Widget *tab) {
+void TabWidget::addTab(const std::string& name, Widget* tab) {
     addTab(tabCount(), name, tab);
 }
 
-void TabWidget::addTab(int index, const std::string &label, Widget *tab) {
+void TabWidget::addTab(int index, const std::string& label, Widget* tab) {
     assert(index <= tabCount());
     // It is important to add the content first since the callback
     // of the header will automatically fire when a new tab is added.
@@ -87,7 +85,7 @@ void TabWidget::addTab(int index, const std::string &label, Widget *tab) {
     assert(mHeader->tabCount() == mContent->childCount());
 }
 
-int TabWidget::tabLabelIndex(const std::string &label) {
+int TabWidget::tabLabelIndex(const std::string& label) {
     return mHeader->tabIndex(label);
 }
 
@@ -100,33 +98,33 @@ void TabWidget::ensureTabVisible(int index) {
         mHeader->ensureTabVisible(index);
 }
 
-const Widget *TabWidget::tab(const std::string &tabName) const {
+const Widget* TabWidget::tab(const std::string& tabName) const {
     int index = mHeader->tabIndex(tabName);
     if (index == -1 || index == mContent->childCount())
         return nullptr;
     return mContent->children()[index];
 }
 
-Widget *TabWidget::tab(const std::string &tabName) {
+Widget* TabWidget::tab(const std::string& tabName) {
     int index = mHeader->tabIndex(tabName);
     if (index == -1 || index == mContent->childCount())
         return nullptr;
     return mContent->children()[index];
 }
 
-const Widget *TabWidget::tab(int index) const {
+const Widget* TabWidget::tab(int index) const {
     if (index < 0 || index >= mContent->childCount())
         return nullptr;
     return mContent->children()[index];
 }
 
-Widget *TabWidget::tab(int index) {
+Widget* TabWidget::tab(int index) {
     if (index < 0 || index >= mContent->childCount())
         return nullptr;
     return mContent->children()[index];
 }
 
-bool TabWidget::removeTab(const std::string &tabName) {
+bool TabWidget::removeTab(const std::string& tabName) {
     int index = mHeader->removeTab(tabName);
     if (index == -1)
         return false;
@@ -142,18 +140,18 @@ void TabWidget::removeTab(int index) {
         setActiveTab(index == (index - 1) ? index - 1 : 0);
 }
 
-const std::string &TabWidget::tabLabelAt(int index) const {
+const std::string& TabWidget::tabLabelAt(int index) const {
     return mHeader->tabLabelAt(index);
 }
 
 void TabWidget::performLayout(NVGcontext* ctx) {
     int headerHeight = mHeader->preferredSize(ctx).y();
     int margin = mTheme->mTabInnerMargin;
-    mHeader->setPosition({ 0, 0 });
-    mHeader->setSize({ mSize.x(), headerHeight });
+    mHeader->setPosition({0, 0});
+    mHeader->setSize({mSize.x(), headerHeight});
     mHeader->performLayout(ctx);
-    mContent->setPosition({ margin, headerHeight + margin });
-    mContent->setSize({ mSize.x() - 2 * margin, mSize.y() - 2*margin - headerHeight });
+    mContent->setPosition({margin, headerHeight + margin});
+    mContent->setSize({mSize.x() - 2 * margin, mSize.y() - 2 * margin - headerHeight});
     mContent->performLayout(ctx);
 }
 
@@ -169,7 +167,6 @@ Vector2i TabWidget::preferredSize(NVGcontext* ctx) const {
 void TabWidget::draw(NVGcontext* ctx) {
     int tabHeight = mHeader->preferredSize(ctx).y();
     auto activeArea = mHeader->activeButtonArea();
-
 
     for (int i = 0; i < 3; ++i) {
         nvgSave(ctx);

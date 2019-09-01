@@ -30,7 +30,7 @@ struct serialization_helper<Eigen::SparseMatrix<Scalar, Options, Index>> {
         return "S" + serialization_helper<Index>::type_id() + serialization_helper<Scalar>::type_id();
     }
 
-    static void write(Serializer &s, const Matrix *value, size_t count) {
+    static void write(Serializer& s, const Matrix* value, size_t count) {
         for (size_t i = 0; i < count; ++i) {
             size_t index = 0;
             std::vector<std::pair<Index, Index>> positions(value->nonZeros());
@@ -54,7 +54,7 @@ struct serialization_helper<Eigen::SparseMatrix<Scalar, Options, Index>> {
         }
     }
 
-    static void read(Serializer &s, Matrix *value, size_t count) {
+    static void read(Serializer& s, Matrix* value, size_t count) {
         for (size_t i = 0; i < count; ++i) {
             Index rows, cols;
             s.read(&rows, sizeof(Index));
@@ -70,7 +70,7 @@ struct serialization_helper<Eigen::SparseMatrix<Scalar, Options, Index>> {
 
             std::vector<Triplet> triplets(coeffs.size());
 
-            for (uint32_t i=0; i<coeffs.size(); ++i)
+            for (uint32_t i = 0; i < coeffs.size(); ++i)
                 triplets[i] = Triplet(positions[i].first, positions[i].second, coeffs[i]);
 
             value->resize(rows, cols);

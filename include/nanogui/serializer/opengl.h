@@ -22,19 +22,19 @@ NAMESPACE_BEGIN(detail)
 // bypass template specializations
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
-template<>
+template <>
 struct serialization_helper<GLShader> {
     static std::string type_id() {
         return "G";
     }
 
-    static void write(Serializer &s, const GLShader *value, size_t count) {
+    static void write(Serializer& s, const GLShader* value, size_t count) {
         for (size_t i = 0; i < count; ++i) {
             if (count > 1)
                 s.push(value->name());
-            for (auto &item : value->mBufferObjects) {
-                const GLShader::Buffer &buf = item.second;
-                size_t totalSize = (size_t) buf.size * (size_t) buf.compSize;
+            for (auto& item : value->mBufferObjects) {
+                const GLShader::Buffer& buf = item.second;
+                size_t totalSize = (size_t)buf.size * (size_t)buf.compSize;
                 s.push(item.first);
                 s.set("glType", buf.glType);
                 s.set("compSize", buf.compSize);
@@ -60,7 +60,7 @@ struct serialization_helper<GLShader> {
         }
     }
 
-    static void read(Serializer &s, GLShader *value, size_t count) {
+    static void read(Serializer& s, GLShader* value, size_t count) {
         for (size_t i = 0; i < count; ++i) {
             if (count > 1)
                 s.push(value->name());
@@ -79,7 +79,7 @@ struct serialization_helper<GLShader> {
                     glGenBuffers(1, &bufferID);
                     value->mBufferObjects[key].id = bufferID;
                 }
-                GLShader::Buffer &buf = value->mBufferObjects[key];
+                GLShader::Buffer& buf = value->mBufferObjects[key];
                 Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> data;
 
                 s.push(key);
@@ -91,16 +91,16 @@ struct serialization_helper<GLShader> {
                 s.get("data", data);
                 s.pop();
 
-                size_t totalSize = (size_t) buf.size * (size_t) buf.compSize;
+                size_t totalSize = (size_t)buf.size * (size_t)buf.compSize;
                 if (key == "indices") {
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buf.id);
                     glBufferData(GL_ELEMENT_ARRAY_BUFFER, totalSize,
-                                 (void *) data.data(), GL_DYNAMIC_DRAW);
+                                 (void*)data.data(), GL_DYNAMIC_DRAW);
                 } else {
                     int attribID = value->attrib(key);
                     glEnableVertexAttribArray(attribID);
                     glBindBuffer(GL_ARRAY_BUFFER, buf.id);
-                    glBufferData(GL_ARRAY_BUFFER, totalSize, (void *) data.data(),
+                    glBufferData(GL_ARRAY_BUFFER, totalSize, (void*)data.data(),
                                  GL_DYNAMIC_DRAW);
                     glVertexAttribPointer(attribID, buf.dim, buf.glType,
                                           buf.compSize == 1 ? GL_TRUE : GL_FALSE, 0, 0);

@@ -51,7 +51,7 @@ public:
      * \param widget
      *     The Widget this layout is controlling sizing for.
      */
-    virtual void performLayout(NVGcontext *ctx, Widget *widget) const = 0;
+    virtual void performLayout(NVGcontext* ctx, Widget* widget) const = 0;
 
     /**
      * The preferred size for this layout.
@@ -66,11 +66,12 @@ public:
      *     The preferred size, accounting for things such as spacing, padding
      *     for icons, etc.
      */
-    virtual Vector2i preferredSize(NVGcontext *ctx, const Widget *widget) const = 0;
+    virtual Vector2i preferredSize(NVGcontext* ctx, const Widget* widget) const = 0;
 
 protected:
     /// Default destructor (exists for inheritance).
-    virtual ~Layout() { }
+    virtual ~Layout() {
+    }
 };
 
 /**
@@ -103,35 +104,51 @@ public:
               int margin = 0, int spacing = 0);
 
     /// The Orientation this BoxLayout is using.
-    Orientation orientation() const { return mOrientation; }
+    Orientation orientation() const {
+        return mOrientation;
+    }
 
     /// Sets the Orientation of this BoxLayout.
-    void setOrientation(Orientation orientation) { mOrientation = orientation; }
+    void setOrientation(Orientation orientation) {
+        mOrientation = orientation;
+    }
 
     /// The Alignment of this BoxLayout.
-    Alignment alignment() const { return mAlignment; }
+    Alignment alignment() const {
+        return mAlignment;
+    }
 
     /// Sets the Alignment of this BoxLayout.
-    void setAlignment(Alignment alignment) { mAlignment = alignment; }
+    void setAlignment(Alignment alignment) {
+        mAlignment = alignment;
+    }
 
     /// The margin of this BoxLayout.
-    int margin() const { return mMargin; }
+    int margin() const {
+        return mMargin;
+    }
 
     /// Sets the margin of this BoxLayout.
-    void setMargin(int margin) { mMargin = margin; }
+    void setMargin(int margin) {
+        mMargin = margin;
+    }
 
     /// The spacing this BoxLayout is using to pad in between widgets.
-    int spacing() const { return mSpacing; }
+    int spacing() const {
+        return mSpacing;
+    }
 
     /// Sets the spacing of this BoxLayout.
-    void setSpacing(int spacing) { mSpacing = spacing; }
+    void setSpacing(int spacing) {
+        mSpacing = spacing;
+    }
 
     /* Implementation of the layout interface */
     /// See \ref Layout::preferredSize.
-    virtual Vector2i preferredSize(NVGcontext *ctx, const Widget *widget) const override;
+    virtual Vector2i preferredSize(NVGcontext* ctx, const Widget* widget) const override;
 
     /// See \ref Layout::performLayout.
-    virtual void performLayout(NVGcontext *ctx, Widget *widget) const override;
+    virtual void performLayout(NVGcontext* ctx, Widget* widget) const override;
 
 protected:
     /// The Orientation of this BoxLayout.
@@ -177,40 +194,58 @@ public:
      *     The amount to indent widgets in a group (underneath a Label).
      */
     GroupLayout(int margin = 15, int spacing = 6, int groupSpacing = 14,
-                int groupIndent = 20)
-        : mMargin(margin), mSpacing(spacing), mGroupSpacing(groupSpacing),
-          mGroupIndent(groupIndent) {}
+                int groupIndent = 20) :
+        mMargin(margin),
+        mSpacing(spacing), mGroupSpacing(groupSpacing),
+        mGroupIndent(groupIndent) {
+    }
 
     /// The margin of this GroupLayout.
-    int margin() const { return mMargin; }
+    int margin() const {
+        return mMargin;
+    }
 
     /// Sets the margin of this GroupLayout.
-    void setMargin(int margin) { mMargin = margin; }
+    void setMargin(int margin) {
+        mMargin = margin;
+    }
 
     /// The spacing between widgets of this GroupLayout.
-    int spacing() const { return mSpacing; }
+    int spacing() const {
+        return mSpacing;
+    }
 
     /// Sets the spacing between widgets of this GroupLayout.
-    void setSpacing(int spacing) { mSpacing = spacing; }
+    void setSpacing(int spacing) {
+        mSpacing = spacing;
+    }
 
     /// The indent of widgets in a group (underneath a Label) of this GroupLayout.
-    int groupIndent() const { return mGroupIndent; }
+    int groupIndent() const {
+        return mGroupIndent;
+    }
 
     /// Sets the indent of widgets in a group (underneath a Label) of this GroupLayout.
-    void setGroupIndent(int groupIndent) { mGroupIndent = groupIndent; }
+    void setGroupIndent(int groupIndent) {
+        mGroupIndent = groupIndent;
+    }
 
     /// The spacing between groups of this GroupLayout.
-    int groupSpacing() const { return mGroupSpacing; }
+    int groupSpacing() const {
+        return mGroupSpacing;
+    }
 
     /// Sets the spacing between groups of this GroupLayout.
-    void setGroupSpacing(int groupSpacing) { mGroupSpacing = groupSpacing; }
+    void setGroupSpacing(int groupSpacing) {
+        mGroupSpacing = groupSpacing;
+    }
 
     /* Implementation of the layout interface */
     /// See \ref Layout::preferredSize.
-    virtual Vector2i preferredSize(NVGcontext *ctx, const Widget *widget) const override;
+    virtual Vector2i preferredSize(NVGcontext* ctx, const Widget* widget) const override;
 
     /// See \ref Layout::performLayout.
-    virtual void performLayout(NVGcontext *ctx, Widget *widget) const override;
+    virtual void performLayout(NVGcontext* ctx, Widget* widget) const override;
 
 protected:
     /// The margin of this GroupLayout.
@@ -259,14 +294,17 @@ public:
      */
     GridLayout(Orientation orientation = Orientation::Horizontal, int resolution = 2,
                Alignment alignment = Alignment::Middle,
-               int margin = 0, int spacing = 0)
-        : mOrientation(orientation), mResolution(resolution), mMargin(margin) {
+               int margin = 0, int spacing = 0) :
+        mOrientation(orientation),
+        mResolution(resolution), mMargin(margin) {
         mDefaultAlignment[0] = mDefaultAlignment[1] = alignment;
         mSpacing = Vector2i::Constant(spacing);
     }
 
     /// The Orientation of this GridLayout.
-    Orientation orientation() const { return mOrientation; }
+    Orientation orientation() const {
+        return mOrientation;
+    }
 
     /// Sets the Orientation of this GridLayout.
     void setOrientation(Orientation orientation) {
@@ -274,60 +312,82 @@ public:
     }
 
     /// The number of rows or columns (depending on the Orientation) of this GridLayout.
-    int resolution() const { return mResolution; }
+    int resolution() const {
+        return mResolution;
+    }
 
     /// Sets the number of rows or columns (depending on the Orientation) of this GridLayout.
-    void setResolution(int resolution) { mResolution = resolution; }
+    void setResolution(int resolution) {
+        mResolution = resolution;
+    }
 
     /// The spacing at the specified axis (row or column number, depending on the Orientation).
-    int spacing(int axis) const { return mSpacing[axis]; }
+    int spacing(int axis) const {
+        return mSpacing[axis];
+    }
 
     /// Sets the spacing for a specific axis.
-    void setSpacing(int axis, int spacing) { mSpacing[axis] = spacing; }
+    void setSpacing(int axis, int spacing) {
+        mSpacing[axis] = spacing;
+    }
 
     /// Sets the spacing for all axes.
-    void setSpacing(int spacing) { mSpacing[0] = mSpacing[1] = spacing; }
+    void setSpacing(int spacing) {
+        mSpacing[0] = mSpacing[1] = spacing;
+    }
 
     /// The margin around this GridLayout.
-    int margin() const { return mMargin; }
+    int margin() const {
+        return mMargin;
+    }
 
     /// Sets the margin of this GridLayout.
-    void setMargin(int margin) { mMargin = margin; }
+    void setMargin(int margin) {
+        mMargin = margin;
+    }
 
     /**
      * The Alignment of the specified axis (row or column number, depending on
      * the Orientation) at the specified index of that row or column.
      */
     Alignment alignment(int axis, int item) const {
-        if (item < (int) mAlignment[axis].size())
+        if (item < (int)mAlignment[axis].size())
             return mAlignment[axis][item];
         else
             return mDefaultAlignment[axis];
     }
 
     /// Sets the Alignment of the columns.
-    void setColAlignment(Alignment value) { mDefaultAlignment[0] = value; }
+    void setColAlignment(Alignment value) {
+        mDefaultAlignment[0] = value;
+    }
 
     /// Sets the Alignment of the rows.
-    void setRowAlignment(Alignment value) { mDefaultAlignment[1] = value; }
+    void setRowAlignment(Alignment value) {
+        mDefaultAlignment[1] = value;
+    }
 
     /// Use this to set variable Alignment for columns.
-    void setColAlignment(const std::vector<Alignment> &value) { mAlignment[0] = value; }
+    void setColAlignment(const std::vector<Alignment>& value) {
+        mAlignment[0] = value;
+    }
 
     /// Use this to set variable Alignment for rows.
-    void setRowAlignment(const std::vector<Alignment> &value) { mAlignment[1] = value; }
+    void setRowAlignment(const std::vector<Alignment>& value) {
+        mAlignment[1] = value;
+    }
 
     /* Implementation of the layout interface */
     /// See \ref Layout::preferredSize.
-    virtual Vector2i preferredSize(NVGcontext *ctx, const Widget *widget) const override;
+    virtual Vector2i preferredSize(NVGcontext* ctx, const Widget* widget) const override;
 
     /// See \ref Layout::performLayout.
-    virtual void performLayout(NVGcontext *ctx, Widget *widget) const override;
+    virtual void performLayout(NVGcontext* ctx, Widget* widget) const override;
 
 protected:
     /// Compute the maximum row and column sizes
-    void computeLayout(NVGcontext *ctx, const Widget *widget,
-                       std::vector<int> *grid) const;
+    void computeLayout(NVGcontext* ctx, const Widget* widget,
+                       std::vector<int>* grid) const;
 
 protected:
     /// The Orientation defining this GridLayout.
@@ -347,6 +407,7 @@ protected:
 
     /// The margin around this GridLayout.
     int mMargin;
+
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
@@ -393,71 +454,97 @@ public:
      * \brief Helper struct to coordinate anchor points for the layout.
      */
     struct Anchor {
-        uint8_t pos[2];    ///< The ``(x, y)`` position.
-        uint8_t size[2];   ///< The ``(x, y)`` size.
-        Alignment align[2];///< The ``(x, y)`` Alignment.
+        uint8_t pos[2];     ///< The ``(x, y)`` position.
+        uint8_t size[2];    ///< The ``(x, y)`` size.
+        Alignment align[2]; ///< The ``(x, y)`` Alignment.
 
         /// Creates a ``0`` Anchor.
-        Anchor() { }
+        Anchor() {
+        }
 
         /// Create an Anchor at position ``(x, y)`` with specified Alignment.
         Anchor(int x, int y, Alignment horiz = Alignment::Fill,
-              Alignment vert = Alignment::Fill) {
-            pos[0] = (uint8_t) x; pos[1] = (uint8_t) y;
+               Alignment vert = Alignment::Fill) {
+            pos[0] = (uint8_t)x;
+            pos[1] = (uint8_t)y;
             size[0] = size[1] = 1;
-            align[0] = horiz; align[1] = vert;
+            align[0] = horiz;
+            align[1] = vert;
         }
 
         /// Create an Anchor at position ``(x, y)`` of size ``(w, h)`` with specified alignments.
         Anchor(int x, int y, int w, int h,
-              Alignment horiz = Alignment::Fill,
-              Alignment vert = Alignment::Fill) {
-            pos[0] = (uint8_t) x; pos[1] = (uint8_t) y;
-            size[0] = (uint8_t) w; size[1] = (uint8_t) h;
-            align[0] = horiz; align[1] = vert;
+               Alignment horiz = Alignment::Fill,
+               Alignment vert = Alignment::Fill) {
+            pos[0] = (uint8_t)x;
+            pos[1] = (uint8_t)y;
+            size[0] = (uint8_t)w;
+            size[1] = (uint8_t)h;
+            align[0] = horiz;
+            align[1] = vert;
         }
 
         /// Allows for printing out Anchor position, size, and alignment.
         operator std::string() const {
             char buf[50];
             std::snprintf(buf, 50, "Format[pos=(%i, %i), size=(%i, %i), align=(%i, %i)]",
-                pos[0], pos[1], size[0], size[1], (int) align[0], (int) align[1]);
+                          pos[0], pos[1], size[0], size[1], (int)align[0], (int)align[1]);
             return buf;
         }
     };
 
     /// Creates an AdvancedGridLayout with specified columns, rows, and margin.
-    AdvancedGridLayout(const std::vector<int> &cols = {}, const std::vector<int> &rows = {}, int margin = 0);
+    AdvancedGridLayout(const std::vector<int>& cols = {}, const std::vector<int>& rows = {}, int margin = 0);
 
     /// The margin of this AdvancedGridLayout.
-    int margin() const { return mMargin; }
+    int margin() const {
+        return mMargin;
+    }
 
     /// Sets the margin of this AdvancedGridLayout.
-    void setMargin(int margin) { mMargin = margin; }
+    void setMargin(int margin) {
+        mMargin = margin;
+    }
 
     /// Return the number of cols
-    int colCount() const { return (int) mCols.size(); }
+    int colCount() const {
+        return (int)mCols.size();
+    }
 
     /// Return the number of rows
-    int rowCount() const { return (int) mRows.size(); }
+    int rowCount() const {
+        return (int)mRows.size();
+    }
 
     /// Append a row of the given size (and stretch factor)
-    void appendRow(int size, float stretch = 0.f) { mRows.push_back(size); mRowStretch.push_back(stretch); };
+    void appendRow(int size, float stretch = 0.f) {
+        mRows.push_back(size);
+        mRowStretch.push_back(stretch);
+    };
 
     /// Append a column of the given size (and stretch factor)
-    void appendCol(int size, float stretch = 0.f) { mCols.push_back(size); mColStretch.push_back(stretch); };
+    void appendCol(int size, float stretch = 0.f) {
+        mCols.push_back(size);
+        mColStretch.push_back(stretch);
+    };
 
     /// Set the stretch factor of a given row
-    void setRowStretch(int index, float stretch) { mRowStretch.at(index) = stretch; }
+    void setRowStretch(int index, float stretch) {
+        mRowStretch.at(index) = stretch;
+    }
 
     /// Set the stretch factor of a given column
-    void setColStretch(int index, float stretch) { mColStretch.at(index) = stretch; }
+    void setColStretch(int index, float stretch) {
+        mColStretch.at(index) = stretch;
+    }
 
     /// Specify the anchor data structure for a given widget
-    void setAnchor(const Widget *widget, const Anchor &anchor) { mAnchor[widget] = anchor; }
+    void setAnchor(const Widget* widget, const Anchor& anchor) {
+        mAnchor[widget] = anchor;
+    }
 
     /// Retrieve the anchor data structure for a given widget
-    Anchor anchor(const Widget *widget) const {
+    Anchor anchor(const Widget* widget) const {
         auto it = mAnchor.find(widget);
         if (it == mAnchor.end())
             throw std::runtime_error("Widget was not registered with the grid layout!");
@@ -466,15 +553,15 @@ public:
 
     /* Implementation of the layout interface */
     /// See \ref Layout::preferredSize.
-    virtual Vector2i preferredSize(NVGcontext *ctx, const Widget *widget) const override;
+    virtual Vector2i preferredSize(NVGcontext* ctx, const Widget* widget) const override;
 
     /// See \ref Layout::performLayout.
-    virtual void performLayout(NVGcontext *ctx, Widget *widget) const override;
+    virtual void performLayout(NVGcontext* ctx, Widget* widget) const override;
 
 protected:
     /// Computes the layout
-    void computeLayout(NVGcontext *ctx, const Widget *widget,
-                       std::vector<int> *grid) const;
+    void computeLayout(NVGcontext* ctx, const Widget* widget,
+                       std::vector<int>* grid) const;
 
 protected:
     /// The columns of this AdvancedGridLayout.
@@ -490,7 +577,7 @@ protected:
     std::vector<float> mRowStretch;
 
     /// The mapping of widgets to their specified anchor points.
-    std::unordered_map<const Widget *, Anchor> mAnchor;
+    std::unordered_map<const Widget*, Anchor> mAnchor;
 
     /// The margin around this AdvancedGridLayout.
     int mMargin;

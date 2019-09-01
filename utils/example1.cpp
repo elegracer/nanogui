@@ -43,11 +43,11 @@
 #include <utility>
 
 #if defined(__GNUC__)
-#  pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #endif
 #if defined(_WIN32)
-#  pragma warning(push)
-#  pragma warning(disable: 4457 4456 4005 4312)
+#pragma warning(push)
+#pragma warning(disable : 4457 4456 4005 4312)
 #endif
 
 #define STB_IMAGE_STATIC
@@ -55,13 +55,13 @@
 #include <stb_image.h>
 
 #if defined(_WIN32)
-#  pragma warning(pop)
+#pragma warning(pop)
 #endif
 #if defined(_WIN32)
-#  if defined(APIENTRY)
-#    undef APIENTRY
-#  endif
-#  include <windows.h>
+#if defined(APIENTRY)
+#undef APIENTRY
+#endif
+#include <windows.h>
 #endif
 
 using std::cout;
@@ -74,17 +74,19 @@ using std::to_string;
 
 class GLTexture {
 public:
-    using handleType = std::unique_ptr<uint8_t[], void(*)(void*)>;
+    using handleType = std::unique_ptr<uint8_t[], void (*)(void*)>;
     GLTexture() = default;
-    GLTexture(const std::string& textureName)
-        : mTextureName(textureName), mTextureId(0) {}
+    GLTexture(const std::string& textureName) :
+        mTextureName(textureName), mTextureId(0) {
+    }
 
-    GLTexture(const std::string& textureName, GLint textureId)
-        : mTextureName(textureName), mTextureId(textureId) {}
+    GLTexture(const std::string& textureName, GLint textureId) :
+        mTextureName(textureName), mTextureId(textureId) {
+    }
 
     GLTexture(const GLTexture& other) = delete;
-    GLTexture(GLTexture&& other) noexcept
-        : mTextureName(std::move(other.mTextureName)),
+    GLTexture(GLTexture&& other) noexcept :
+        mTextureName(std::move(other.mTextureName)),
         mTextureId(other.mTextureId) {
         other.mTextureId = 0;
     }
@@ -99,8 +101,12 @@ public:
             glDeleteTextures(1, &mTextureId);
     }
 
-    GLuint texture() const { return mTextureId; }
-    const std::string& textureName() const { return mTextureName; }
+    GLuint texture() const {
+        return mTextureId;
+    }
+    const std::string& textureName() const {
+        return mTextureName;
+    }
 
     /**
     *  Load a file in memory and create an OpenGL texture.
@@ -121,11 +127,26 @@ public:
         GLint internalFormat;
         GLint format;
         switch (n) {
-            case 1: internalFormat = GL_R8; format = GL_RED; break;
-            case 2: internalFormat = GL_RG8; format = GL_RG; break;
-            case 3: internalFormat = GL_RGB8; format = GL_RGB; break;
-            case 4: internalFormat = GL_RGBA8; format = GL_RGBA; break;
-            default: internalFormat = 0; format = 0; break;
+        case 1:
+            internalFormat = GL_R8;
+            format = GL_RED;
+            break;
+        case 2:
+            internalFormat = GL_RG8;
+            format = GL_RG;
+            break;
+        case 3:
+            internalFormat = GL_RGB8;
+            format = GL_RGB;
+            break;
+        case 4:
+            internalFormat = GL_RGBA8;
+            format = GL_RGBA;
+            break;
+        default:
+            internalFormat = 0;
+            format = 0;
+            break;
         }
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_UNSIGNED_BYTE, textureData.get());
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -142,10 +163,11 @@ private:
 
 class ExampleApplication : public nanogui::Screen {
 public:
-    ExampleApplication() : nanogui::Screen(Eigen::Vector2i(1024, 768), "NanoGUI Test") {
+    ExampleApplication() :
+        nanogui::Screen(Eigen::Vector2i(1024, 768), "NanoGUI Test") {
         using namespace nanogui;
 
-        Window *window = new Window(this, "Button demo");
+        Window* window = new Window(this, "Button demo");
         window->setPosition(Vector2i(15, 15));
         window->setLayout(new GroupLayout());
 
@@ -153,7 +175,7 @@ public:
            freed when the parent window is deleted */
         new Label(window, "Push buttons", "sans-bold");
 
-        Button *b = new Button(window, "Plain button");
+        Button* b = new Button(window, "Plain button");
         b->setCallback([] { cout << "pushed!" << endl; });
         b->setTooltip("short tooltip");
 
@@ -162,7 +184,7 @@ public:
         b->setBackgroundColor(Color(0, 0, 255, 25));
         b->setCallback([] { cout << "pushed!" << endl; });
         b->setTooltip("This button has a fairly long tooltip. It is so long, in "
-                "fact, that the shown text will span several lines.");
+                      "fact, that the shown text will span several lines.");
 
         new Label(window, "Toggle buttons", "sans-bold");
         b = new Button(window, "Toggle me");
@@ -176,7 +198,7 @@ public:
         b->setFlags(Button::RadioButton);
 
         new Label(window, "A tool palette", "sans-bold");
-        Widget *tools = new Widget(window);
+        Widget* tools = new Widget(window);
         tools->setLayout(new BoxLayout(Orientation::Horizontal,
                                        Alignment::Middle, 0, 6));
 
@@ -186,20 +208,20 @@ public:
         b = new ToolButton(tools, ENTYPO_ICON_INSTALL);
 
         new Label(window, "Popup buttons", "sans-bold");
-        PopupButton *popupBtn = new PopupButton(window, "Popup", ENTYPO_ICON_EXPORT);
-        Popup *popup = popupBtn->popup();
+        PopupButton* popupBtn = new PopupButton(window, "Popup", ENTYPO_ICON_EXPORT);
+        Popup* popup = popupBtn->popup();
         popup->setLayout(new GroupLayout());
         new Label(popup, "Arbitrary widgets can be placed here");
         new CheckBox(popup, "A check box");
         // popup right
         popupBtn = new PopupButton(popup, "Recursive popup", ENTYPO_ICON_FLASH);
-        Popup *popupRight = popupBtn->popup();
+        Popup* popupRight = popupBtn->popup();
         popupRight->setLayout(new GroupLayout());
         new CheckBox(popupRight, "Another check box");
         // popup left
         popupBtn = new PopupButton(popup, "Recursive popup", ENTYPO_ICON_FLASH);
         popupBtn->setSide(Popup::Side::Left);
-        Popup *popupLeft = popupBtn->popup();
+        Popup* popupLeft = popupBtn->popup();
         popupLeft->setLayout(new GroupLayout());
         new CheckBox(popupLeft, "Another check box");
 
@@ -229,18 +251,18 @@ public:
 
         vector<pair<int, string>>
             icons = loadImageDirectory(mNVGContext, "icons");
-        #if defined(_WIN32)
-            string resourcesFolderPath("../resources/");
-        #else
-            string resourcesFolderPath("./");
-        #endif
+#if defined(_WIN32)
+        string resourcesFolderPath("../resources/");
+#else
+        string resourcesFolderPath("./");
+#endif
 
         new Label(window, "Image panel & scroll panel", "sans-bold");
-        PopupButton *imagePanelBtn = new PopupButton(window, "Image Panel");
+        PopupButton* imagePanelBtn = new PopupButton(window, "Image Panel");
         imagePanelBtn->setIcon(ENTYPO_ICON_FOLDER);
         popup = imagePanelBtn->popup();
-        VScrollPanel *vscroll = new VScrollPanel(popup);
-        ImagePanel *imgPanel = new ImagePanel(vscroll);
+        VScrollPanel* vscroll = new VScrollPanel(popup);
+        ImagePanel* imgPanel = new ImagePanel(vscroll);
         imgPanel->setImages(icons);
         popup->setFixedSize(Vector2i(245, 150));
 
@@ -268,20 +290,20 @@ public:
         imageView->setPixelInfoThreshold(20);
         imageView->setPixelInfoCallback(
             [this, imageView](const Vector2i& index) -> pair<string, Color> {
-            auto& imageData = mImagesData[mCurrentImage].second;
-            auto& textureSize = imageView->imageSize();
-            string stringData;
-            uint16_t channelSum = 0;
-            for (int i = 0; i != 4; ++i) {
-                auto& channelData = imageData[4*index.y()*textureSize.x() + 4*index.x() + i];
-                channelSum += channelData;
-                stringData += (to_string(static_cast<int>(channelData)) + "\n");
-            }
-            float intensity = static_cast<float>(255 - (channelSum / 4)) / 255.0f;
-            float colorScale = intensity > 0.5f ? (intensity + 1) / 2 : intensity / 2;
-            Color textColor = Color(colorScale, 1.0f);
-            return { stringData, textColor };
-        });
+                auto& imageData = mImagesData[mCurrentImage].second;
+                auto& textureSize = imageView->imageSize();
+                string stringData;
+                uint16_t channelSum = 0;
+                for (int i = 0; i != 4; ++i) {
+                    auto& channelData = imageData[4 * index.y() * textureSize.x() + 4 * index.x() + i];
+                    channelSum += channelData;
+                    stringData += (to_string(static_cast<int>(channelData)) + "\n");
+                }
+                float intensity = static_cast<float>(255 - (channelSum / 4)) / 255.0f;
+                float colorScale = intensity > 0.5f ? (intensity + 1) / 2 : intensity / 2;
+                Color textColor = Color(colorScale, 1.0f);
+                return {stringData, textColor};
+            });
 
         new Label(window, "File dialog", "sans-bold");
         tools = new Widget(window);
@@ -289,54 +311,50 @@ public:
                                        Alignment::Middle, 0, 6));
         b = new Button(tools, "Open");
         b->setCallback([&] {
-            cout << "File dialog result: " << file_dialog(
-                    { {"png", "Portable Network Graphics"}, {"txt", "Text file"} }, false) << endl;
+            cout << "File dialog result: " << file_dialog({{"png", "Portable Network Graphics"}, {"txt", "Text file"}}, false) << endl;
         });
         b = new Button(tools, "Save");
         b->setCallback([&] {
-            cout << "File dialog result: " << file_dialog(
-                    { {"png", "Portable Network Graphics"}, {"txt", "Text file"} }, true) << endl;
+            cout << "File dialog result: " << file_dialog({{"png", "Portable Network Graphics"}, {"txt", "Text file"}}, true) << endl;
         });
 
         new Label(window, "Combo box", "sans-bold");
-        new ComboBox(window, { "Combo box item 1", "Combo box item 2", "Combo box item 3"});
+        new ComboBox(window, {"Combo box item 1", "Combo box item 2", "Combo box item 3"});
         new Label(window, "Check box", "sans-bold");
-        CheckBox *cb = new CheckBox(window, "Flag 1",
-            [](bool state) { cout << "Check box 1 state: " << state << endl; }
-        );
+        CheckBox* cb = new CheckBox(window, "Flag 1",
+                                    [](bool state) { cout << "Check box 1 state: " << state << endl; });
         cb->setChecked(true);
         cb = new CheckBox(window, "Flag 2",
-            [](bool state) { cout << "Check box 2 state: " << state << endl; }
-        );
+                          [](bool state) { cout << "Check box 2 state: " << state << endl; });
         new Label(window, "Progress bar", "sans-bold");
         mProgress = new ProgressBar(window);
 
         new Label(window, "Slider and text box", "sans-bold");
 
-        Widget *panel = new Widget(window);
+        Widget* panel = new Widget(window);
         panel->setLayout(new BoxLayout(Orientation::Horizontal,
                                        Alignment::Middle, 0, 20));
 
-        Slider *slider = new Slider(panel);
+        Slider* slider = new Slider(panel);
         slider->setValue(0.5f);
         slider->setFixedWidth(80);
 
-        TextBox *textBox = new TextBox(panel);
+        TextBox* textBox = new TextBox(panel);
         textBox->setFixedSize(Vector2i(60, 25));
         textBox->setValue("50");
         textBox->setUnits("%");
         slider->setCallback([textBox](float value) {
-            textBox->setValue(std::to_string((int) (value * 100)));
+            textBox->setValue(std::to_string((int)(value * 100)));
         });
         slider->setFinalCallback([&](float value) {
-            cout << "Final slider value: " << (int) (value * 100) << endl;
+            cout << "Final slider value: " << (int)(value * 100) << endl;
         });
-        textBox->setFixedSize(Vector2i(60,25));
+        textBox->setFixedSize(Vector2i(60, 25));
         textBox->setFontSize(20);
         textBox->setAlignment(TextBox::Alignment::Right);
 
         window = new Window(this, "Misc. widgets");
-        window->setPosition(Vector2i(425,15));
+        window->setPosition(Vector2i(425, 15));
         window->setLayout(new GroupLayout());
 
         TabWidget* tabWidget = window->add<TabWidget>();
@@ -353,45 +371,41 @@ public:
 
         layer->add<Label>("Function graph widget", "sans-bold");
 
-        Graph *graph = layer->add<Graph>("Some Function");
+        Graph* graph = layer->add<Graph>("Some Function");
 
         graph->setHeader("E = 2.35e-3");
         graph->setFooter("Iteration 89");
-        VectorXf &func = graph->values();
+        VectorXf& func = graph->values();
         func.resize(100);
         for (int i = 0; i < 100; ++i)
-            func[i] = 0.5f * (0.5f * std::sin(i / 10.f) +
-                              0.5f * std::cos(i / 23.f) + 1);
+            func[i] = 0.5f * (0.5f * std::sin(i / 10.f) + 0.5f * std::cos(i / 23.f) + 1);
 
         // Dummy tab used to represent the last tab button.
         tabWidget->createTab("+");
 
         // A simple counter.
         int counter = 1;
-        tabWidget->setCallback([tabWidget, this, counter] (int index) mutable {
-            if (index == (tabWidget->tabCount()-1)) {
+        tabWidget->setCallback([tabWidget, this, counter](int index) mutable {
+            if (index == (tabWidget->tabCount() - 1)) {
                 // When the "+" tab has been clicked, simply add a new tab.
                 string tabName = "Dynamic " + to_string(counter);
                 Widget* layerDyn = tabWidget->createTab(index, tabName);
                 layerDyn->setLayout(new GroupLayout());
                 layerDyn->add<Label>("Function graph widget", "sans-bold");
-                Graph *graphDyn = layerDyn->add<Graph>("Dynamic function");
+                Graph* graphDyn = layerDyn->add<Graph>("Dynamic function");
 
                 graphDyn->setHeader("E = 2.35e-3");
-                graphDyn->setFooter("Iteration " + to_string(index*counter));
-                VectorXf &funcDyn = graphDyn->values();
+                graphDyn->setFooter("Iteration " + to_string(index * counter));
+                VectorXf& funcDyn = graphDyn->values();
                 funcDyn.resize(100);
                 for (int i = 0; i < 100; ++i)
-                    funcDyn[i] = 0.5f *
-                        std::abs((0.5f * std::sin(i / 10.f + counter) +
-                                  0.5f * std::cos(i / 23.f + 1 + counter)));
+                    funcDyn[i] = 0.5f * std::abs((0.5f * std::sin(i / 10.f + counter) + 0.5f * std::cos(i / 23.f + 1 + counter)));
                 ++counter;
                 // We must invoke perform layout from the screen instance to keep everything in order.
                 // This is essential when creating tabs dynamically.
                 performLayout();
                 // Ensure that the newly added header is visible on screen
                 tabWidget->ensureTabVisible(index);
-
             }
         });
         tabWidget->setActiveTab(0);
@@ -418,11 +432,11 @@ public:
 
         window = new Window(this, "Grid of small widgets");
         window->setPosition(Vector2i(425, 300));
-        GridLayout *layout =
+        GridLayout* layout =
             new GridLayout(Orientation::Horizontal, 2,
                            Alignment::Middle, 15, 5);
         layout->setColAlignment(
-            { Alignment::Maximum, Alignment::Fill });
+            {Alignment::Maximum, Alignment::Fill});
         layout->setSpacing(0, 10);
         window->setLayout(layout);
 
@@ -462,15 +476,15 @@ public:
         }
 
         new Label(window, "Combo box :", "sans-bold");
-        ComboBox *cobo =
-            new ComboBox(window, { "Item 1", "Item 2", "Item 3" });
+        ComboBox* cobo =
+            new ComboBox(window, {"Item 1", "Item 2", "Item 3"});
         cobo->setFontSize(16);
-        cobo->setFixedSize(Vector2i(100,20));
+        cobo->setFixedSize(Vector2i(100, 20));
 
         new Label(window, "Color picker :", "sans-bold");
         auto cp = new ColorPicker(window, {255, 120, 0, 255});
         cp->setFixedSize({100, 20});
-        cp->setFinalCallback([](const Color &c) {
+        cp->setFinalCallback([](const Color& c) {
             std::cout << "ColorPicker Final Callback: ["
                       << c.r() << ", "
                       << c.g() << ", "
@@ -484,7 +498,7 @@ public:
             new GridLayout(Orientation::Horizontal, 2,
                            Alignment::Middle, 15, 5);
         layout->setColAlignment(
-            { Alignment::Maximum, Alignment::Fill });
+            {Alignment::Maximum, Alignment::Fill});
         layout->setSpacing(0, 10);
         window->setLayout(layout);
         window->setPosition(Vector2i(425, 500));
@@ -501,18 +515,17 @@ public:
         blueIntBox->setEditable(false);
         new Label(window, "Alpha: ");
         auto alphaIntBox = new IntBox<int>(window);
-        cp->setCallback([b,redIntBox,blueIntBox,greenIntBox,alphaIntBox](const Color &c) {
+        cp->setCallback([b, redIntBox, blueIntBox, greenIntBox, alphaIntBox](const Color& c) {
             b->setBackgroundColor(c);
             b->setTextColor(c.contrastingColor());
-            int red = (int) (c.r() * 255.0f);
+            int red = (int)(c.r() * 255.0f);
             redIntBox->setValue(red);
-            int green = (int) (c.g() * 255.0f);
+            int green = (int)(c.g() * 255.0f);
             greenIntBox->setValue(green);
-            int blue = (int) (c.b() * 255.0f);
+            int blue = (int)(c.b() * 255.0f);
             blueIntBox->setValue(blue);
-            int alpha = (int) (c.w() * 255.0f);
+            int alpha = (int)(c.w() * 255.0f);
             alphaIntBox->setValue(alpha);
-
         });
 
         performLayout();
@@ -543,8 +556,7 @@ public:
             "uniform float intensity;\n"
             "void main() {\n"
             "    color = vec4(vec3(intensity), 1.0);\n"
-            "}"
-        );
+            "}");
 
         MatrixXu indices(3, 2); /* Draw 2 triangles */
         indices.col(0) << 0, 1, 2;
@@ -552,9 +564,9 @@ public:
 
         MatrixXf positions(3, 4);
         positions.col(0) << -1, -1, 0;
-        positions.col(1) <<  1, -1, 0;
-        positions.col(2) <<  1,  1, 0;
-        positions.col(3) << -1,  1, 0;
+        positions.col(1) << 1, -1, 0;
+        positions.col(2) << 1, 1, 0;
+        positions.col(3) << -1, 1, 0;
 
         mShader.bind();
         mShader.uploadIndices(indices);
@@ -576,9 +588,9 @@ public:
         return false;
     }
 
-    virtual void draw(NVGcontext *ctx) {
+    virtual void draw(NVGcontext* ctx) {
         /* Animate the scrollbar */
-        mProgress->setValue(std::fmod((float) glfwGetTime() / 10, 1.0f));
+        mProgress->setValue(std::fmod((float)glfwGetTime() / 10, 1.0f));
 
         /* Draw the user interface */
         Screen::draw(ctx);
@@ -592,17 +604,18 @@ public:
 
         Matrix4f mvp;
         mvp.setIdentity();
-        mvp.topLeftCorner<3,3>() = Matrix3f(Eigen::AngleAxisf((float) glfwGetTime(),  Vector3f::UnitZ())) * 0.25f;
+        mvp.topLeftCorner<3, 3>() = Matrix3f(Eigen::AngleAxisf((float)glfwGetTime(), Vector3f::UnitZ())) * 0.25f;
 
-        mvp.row(0) *= (float) mSize.y() / (float) mSize.x();
+        mvp.row(0) *= (float)mSize.y() / (float)mSize.x();
 
         mShader.setUniform("modelViewProj", mvp);
 
         /* Draw 2 triangles starting at index 0 */
         mShader.drawIndexed(GL_TRIANGLES, 0, 2);
     }
+
 private:
-    nanogui::ProgressBar *mProgress;
+    nanogui::ProgressBar* mProgress;
     nanogui::GLShader mShader;
 
     using imagesDataType = vector<pair<GLTexture, GLTexture::handleType>>;
@@ -610,7 +623,7 @@ private:
     int mCurrentImage;
 };
 
-int main(int /* argc */, char ** /* argv */) {
+int main(int /* argc */, char** /* argv */) {
     try {
         nanogui::init();
 
@@ -622,13 +635,13 @@ int main(int /* argc */, char ** /* argv */) {
         }
 
         nanogui::shutdown();
-    } catch (const std::runtime_error &e) {
+    } catch (const std::runtime_error& e) {
         std::string error_msg = std::string("Caught a fatal error: ") + std::string(e.what());
-        #if defined(_WIN32)
-            MessageBoxA(nullptr, error_msg.c_str(), NULL, MB_ICONERROR | MB_OK);
-        #else
-            std::cerr << error_msg << endl;
-        #endif
+#if defined(_WIN32)
+        MessageBoxA(nullptr, error_msg.c_str(), NULL, MB_ICONERROR | MB_OK);
+#else
+        std::cerr << error_msg << endl;
+#endif
         return -1;
     }
 

@@ -36,13 +36,17 @@ public:
      * \param color
      *     The initial color of the ColorWheel (default: Red).
      */
-    ColorWheel(Widget *parent, const Color& color = Color(1.0f, 0.0f, 0.0f, 1.0f));
+    ColorWheel(Widget* parent, const Color& color = Color(1.0f, 0.0f, 0.0f, 1.0f));
 
     /// The callback to execute when a user changes the ColorWheel value.
-    std::function<void(const Color &)> callback() const { return mCallback; }
+    std::function<void(const Color&)> callback() const {
+        return mCallback;
+    }
 
     /// Sets the callback to execute when a user changes the ColorWheel value.
-    void setCallback(const std::function<void(const Color &)> &callback) { mCallback = callback; }
+    void setCallback(const std::function<void(const Color&)>& callback) {
+        mCallback = callback;
+    }
 
     /// The current Color this ColorWheel has selected.
     Color color() const;
@@ -51,22 +55,22 @@ public:
     void setColor(const Color& color);
 
     /// The preferred size of this ColorWheel.
-    virtual Vector2i preferredSize(NVGcontext *ctx) const override;
+    virtual Vector2i preferredSize(NVGcontext* ctx) const override;
 
     /// Draws the ColorWheel.
-    virtual void draw(NVGcontext *ctx) override;
+    virtual void draw(NVGcontext* ctx) override;
 
     /// Handles mouse button click events for the ColorWheel.
-    virtual bool mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers) override;
+    virtual bool mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers) override;
 
     /// Handles mouse drag events for the ColorWheel.
-    virtual bool mouseDragEvent(const Vector2i &p, const Vector2i &rel, int button, int modifiers) override;
+    virtual bool mouseDragEvent(const Vector2i& p, const Vector2i& rel, int button, int modifiers) override;
 
     /// Saves the current state of this ColorWheel to the specified Serializer.
-    virtual void save(Serializer &s) const override;
+    virtual void save(Serializer& s) const override;
 
     /// Sets the state of this ColorWheel using the specified Serializer.
-    virtual bool load(Serializer &s) override;
+    virtual bool load(Serializer& s) override;
 
 private:
     // Used to describe where the mouse is interacting
@@ -81,7 +85,7 @@ private:
     Color hue2rgb(float h) const;
 
     // Manipulates the positioning of the different regions of the ColorWheel.
-    Region adjustPosition(const Vector2i &p, Region consideredRegions = Both);
+    Region adjustPosition(const Vector2i& p, Region consideredRegions = Both);
 
 protected:
     /// The current Hue in the HSV color model.
@@ -105,7 +109,7 @@ protected:
     Region mDragRegion;
 
     /// The current callback to execute when the color value has changed.
-    std::function<void(const Color &)> mCallback;
+    std::function<void(const Color&)> mCallback;
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW

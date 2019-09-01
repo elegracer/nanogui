@@ -16,8 +16,8 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-Label::Label(Widget *parent, const std::string &caption, const std::string &font, int fontSize)
-    : Widget(parent), mCaption(caption), mFont(font) {
+Label::Label(Widget* parent, const std::string& caption, const std::string& font, int fontSize) :
+    Widget(parent), mCaption(caption), mFont(font) {
     if (mTheme) {
         mFontSize = mTheme->mStandardFontSize;
         mColor = mTheme->mTextColor;
@@ -25,7 +25,7 @@ Label::Label(Widget *parent, const std::string &caption, const std::string &font
     if (fontSize >= 0) mFontSize = fontSize;
 }
 
-void Label::setTheme(Theme *theme) {
+void Label::setTheme(Theme* theme) {
     Widget::setTheme(theme);
     if (mTheme) {
         mFontSize = mTheme->mStandardFontSize;
@@ -33,7 +33,7 @@ void Label::setTheme(Theme *theme) {
     }
 }
 
-Vector2i Label::preferredSize(NVGcontext *ctx) const {
+Vector2i Label::preferredSize(NVGcontext* ctx) const {
     if (mCaption == "")
         return Vector2i::Zero();
     nvgFontFace(ctx, mFont.c_str());
@@ -47,12 +47,11 @@ Vector2i Label::preferredSize(NVGcontext *ctx) const {
         nvgTextAlign(ctx, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
         return Vector2i(
             nvgTextBounds(ctx, 0, 0, mCaption.c_str(), nullptr, nullptr) + 2,
-            fontSize()
-        );
+            fontSize());
     }
 }
 
-void Label::draw(NVGcontext *ctx) {
+void Label::draw(NVGcontext* ctx) {
     Widget::draw(ctx);
     nvgFontFace(ctx, mFont.c_str());
     nvgFontSize(ctx, fontSize());
@@ -66,14 +65,14 @@ void Label::draw(NVGcontext *ctx) {
     }
 }
 
-void Label::save(Serializer &s) const {
+void Label::save(Serializer& s) const {
     Widget::save(s);
     s.set("caption", mCaption);
     s.set("font", mFont);
     s.set("color", mColor);
 }
 
-bool Label::load(Serializer &s) {
+bool Label::load(Serializer& s) {
     if (!Widget::load(s)) return false;
     if (!s.get("caption", mCaption)) return false;
     if (!s.get("font", mFont)) return false;

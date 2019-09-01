@@ -18,10 +18,11 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-Window::Window(Widget *parent, const std::string &title)
-    : Widget(parent), mTitle(title), mButtonPanel(nullptr), mModal(false), mDrag(false) { }
+Window::Window(Widget* parent, const std::string& title) :
+    Widget(parent), mTitle(title), mButtonPanel(nullptr), mModal(false), mDrag(false) {
+}
 
-Vector2i Window::preferredSize(NVGcontext *ctx) const {
+Vector2i Window::preferredSize(NVGcontext* ctx) const {
     if (mButtonPanel)
         mButtonPanel->setVisible(false);
     Vector2i result = Widget::preferredSize(ctx);
@@ -34,11 +35,10 @@ Vector2i Window::preferredSize(NVGcontext *ctx) const {
     nvgTextBounds(ctx, 0, 0, mTitle.c_str(), nullptr, bounds);
 
     return result.cwiseMax(Vector2i(
-        bounds[2]-bounds[0] + 20, bounds[3]-bounds[1]
-    ));
+        bounds[2] - bounds[0] + 20, bounds[3] - bounds[1]));
 }
 
-Widget *Window::buttonPanel() {
+Widget* Window::buttonPanel() {
     if (!mButtonPanel) {
         mButtonPanel = new Widget(this);
         mButtonPanel->setLayout(new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 4));
@@ -46,7 +46,7 @@ Widget *Window::buttonPanel() {
     return mButtonPanel;
 }
 
-void Window::performLayout(NVGcontext *ctx) {
+void Window::performLayout(NVGcontext* ctx) {
     if (!mButtonPanel) {
         Widget::performLayout(ctx);
     } else {
@@ -63,7 +63,7 @@ void Window::performLayout(NVGcontext *ctx) {
     }
 }
 
-void Window::draw(NVGcontext *ctx) {
+void Window::draw(NVGcontext* ctx) {
     int ds = mTheme->mWindowDropShadowSize, cr = mTheme->mWindowCornerRadius;
     int hh = mTheme->mWindowHeaderHeight;
 
@@ -72,20 +72,18 @@ void Window::draw(NVGcontext *ctx) {
     nvgBeginPath(ctx);
     nvgRoundedRect(ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr);
 
-    nvgFillColor(ctx, mMouseFocus ? mTheme->mWindowFillFocused
-                                  : mTheme->mWindowFillUnfocused);
+    nvgFillColor(ctx, mMouseFocus ? mTheme->mWindowFillFocused : mTheme->mWindowFillUnfocused);
     nvgFill(ctx);
-
 
     /* Draw a drop shadow */
     NVGpaint shadowPaint = nvgBoxGradient(
-        ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr*2, ds*2,
+        ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr * 2, ds * 2,
         mTheme->mDropShadow, mTheme->mTransparent);
 
     nvgSave(ctx);
     nvgResetScissor(ctx);
     nvgBeginPath(ctx);
-    nvgRect(ctx, mPos.x()-ds,mPos.y()-ds, mSize.x()+2*ds, mSize.y()+2*ds);
+    nvgRect(ctx, mPos.x() - ds, mPos.y() - ds, mSize.x() + 2 * ds, mSize.y() + 2 * ds);
     nvgRoundedRect(ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr);
     nvgPathWinding(ctx, NVG_HOLE);
     nvgFillPaint(ctx, shadowPaint);
@@ -131,8 +129,7 @@ void Window::draw(NVGcontext *ctx) {
                 mPos.y() + hh / 2, mTitle.c_str(), nullptr);
 
         nvgFontBlur(ctx, 0);
-        nvgFillColor(ctx, mFocused ? mTheme->mWindowTitleFocused
-                                   : mTheme->mWindowTitleUnfocused);
+        nvgFillColor(ctx, mFocused ? mTheme->mWindowTitleFocused : mTheme->mWindowTitleUnfocused);
         nvgText(ctx, mPos.x() + mSize.x() / 2, mPos.y() + hh / 2 - 1,
                 mTitle.c_str(), nullptr);
     }
@@ -142,20 +139,20 @@ void Window::draw(NVGcontext *ctx) {
 }
 
 void Window::dispose() {
-    Widget *widget = this;
+    Widget* widget = this;
     while (widget->parent())
         widget = widget->parent();
-    ((Screen *) widget)->disposeWindow(this);
+    ((Screen*)widget)->disposeWindow(this);
 }
 
 void Window::center() {
-    Widget *widget = this;
+    Widget* widget = this;
     while (widget->parent())
         widget = widget->parent();
-    ((Screen *) widget)->centerWindow(this);
+    ((Screen*)widget)->centerWindow(this);
 }
 
-bool Window::mouseDragEvent(const Vector2i &, const Vector2i &rel,
+bool Window::mouseDragEvent(const Vector2i&, const Vector2i& rel,
                             int button, int /* modifiers */) {
     if (mDrag && (button & (1 << GLFW_MOUSE_BUTTON_1)) != 0) {
         mPos += rel;
@@ -166,7 +163,7 @@ bool Window::mouseDragEvent(const Vector2i &, const Vector2i &rel,
     return false;
 }
 
-bool Window::mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers) {
+bool Window::mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers) {
     if (Widget::mouseButtonEvent(p, button, down, modifiers))
         return true;
     if (button == GLFW_MOUSE_BUTTON_1) {
@@ -176,7 +173,7 @@ bool Window::mouseButtonEvent(const Vector2i &p, int button, bool down, int modi
     return false;
 }
 
-bool Window::scrollEvent(const Vector2i &p, const Vector2f &rel) {
+bool Window::scrollEvent(const Vector2i& p, const Vector2f& rel) {
     Widget::scrollEvent(p, rel);
     return true;
 }
@@ -185,13 +182,13 @@ void Window::refreshRelativePlacement() {
     /* Overridden in \ref Popup */
 }
 
-void Window::save(Serializer &s) const {
+void Window::save(Serializer& s) const {
     Widget::save(s);
     s.set("title", mTitle);
     s.set("modal", mModal);
 }
 
-bool Window::load(Serializer &s) {
+bool Window::load(Serializer& s) {
     if (!Widget::load(s)) return false;
     if (!s.get("title", mTitle)) return false;
     if (!s.get("modal", mModal)) return false;

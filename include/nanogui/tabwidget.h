@@ -62,7 +62,7 @@ NAMESPACE_BEGIN(nanogui)
  */
 class NANOGUI_EXPORT TabWidget : public Widget {
 public:
-    TabWidget(Widget *parent);
+    TabWidget(Widget* parent);
 
     /**
      * \brief Forcibly prevent mis-use of the class by throwing an exception.
@@ -73,7 +73,7 @@ public:
      *     An exception is always thrown, as children are not allowed to be
      *     added directly to this Widget.
      */
-    virtual void addChild(int index, Widget *widget) override;
+    virtual void addChild(int index, Widget* widget) override;
 
     void setActiveTab(int tabIndex);
     int activeTab() const;
@@ -83,36 +83,40 @@ public:
      * Sets the callable objects which is invoked when a tab is changed.
      * The argument provided to the callback is the index of the new active tab.
      */
-    void setCallback(const std::function<void(int)> &callback) { mCallback = callback; };
-    const std::function<void(int)> &callback() const { return mCallback; }
+    void setCallback(const std::function<void(int)>& callback) {
+        mCallback = callback;
+    };
+    const std::function<void(int)>& callback() const {
+        return mCallback;
+    }
 
     /// Creates a new tab with the specified name and returns a pointer to the layer.
-    Widget *createTab(const std::string &label);
-    Widget *createTab(int index, const std::string &label);
+    Widget* createTab(const std::string& label);
+    Widget* createTab(int index, const std::string& label);
 
     /// Inserts a tab at the end of the tabs collection and associates it with the provided widget.
-    void addTab(const std::string &label, Widget *tab);
+    void addTab(const std::string& label, Widget* tab);
 
     /// Inserts a tab into the tabs collection at the specified index and associates it with the provided widget.
-    void addTab(int index, const std::string &label, Widget *tab);
+    void addTab(int index, const std::string& label, Widget* tab);
 
     /**
      * Removes the tab with the specified label and returns the index of the label.
      * Returns whether the removal was successful.
      */
-    bool removeTab(const std::string &label);
+    bool removeTab(const std::string& label);
 
     /// Removes the tab with the specified index.
     void removeTab(int index);
 
     /// Retrieves the label of the tab at a specific index.
-    const std::string &tabLabelAt(int index) const;
+    const std::string& tabLabelAt(int index) const;
 
     /**
      * Retrieves the index of a specific tab using its tab label.
      * Returns -1 if there is no such tab.
      */
-    int tabLabelIndex(const std::string &label);
+    int tabLabelIndex(const std::string& label);
 
     /**
      * Retrieves the index of a specific tab using a widget pointer.
@@ -139,7 +143,7 @@ public:
      * \return
      *     The Widget associated with this label, or ``nullptr`` if not found.
      */
-    const Widget *tab(const std::string &label) const;
+    const Widget* tab(const std::string& label) const;
 
     /**
      * \brief Returns a pointer to the Widget associated with the specified label.
@@ -150,7 +154,7 @@ public:
      * \return
      *     The Widget associated with this label, or ``nullptr`` if not found.
      */
-    Widget *tab(const std::string &label);
+    Widget* tab(const std::string& label);
 
     /**
      * \brief Returns a ``const`` pointer to the Widget associated with the
@@ -163,7 +167,7 @@ public:
      *     The Widget at the specified index, or ``nullptr`` if ``index`` is not
      *     a valid index.
      */
-    const Widget *tab(int index) const;
+    const Widget* tab(int index) const;
 
     /**
      * \brief Returns a pointer to the Widget associated with the specified index.
@@ -175,7 +179,7 @@ public:
      *     The Widget at the specified index, or ``nullptr`` if ``index`` is not
      *     a valid index.
      */
-    Widget *tab(int index);
+    Widget* tab(int index);
 
     virtual void performLayout(NVGcontext* ctx) override;
     virtual Vector2i preferredSize(NVGcontext* ctx) const override;
@@ -185,6 +189,7 @@ private:
     TabHeader* mHeader;
     StackedWidget* mContent;
     std::function<void(int)> mCallback;
+
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

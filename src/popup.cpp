@@ -17,12 +17,12 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-Popup::Popup(Widget *parent, Window *parentWindow)
-    : Window(parent, ""), mParentWindow(parentWindow),
-      mAnchorPos(Vector2i::Zero()), mAnchorHeight(30), mSide(Side::Right) {
+Popup::Popup(Widget* parent, Window* parentWindow) :
+    Window(parent, ""), mParentWindow(parentWindow),
+    mAnchorPos(Vector2i::Zero()), mAnchorHeight(30), mSide(Side::Right) {
 }
 
-void Popup::performLayout(NVGcontext *ctx) {
+void Popup::performLayout(NVGcontext* ctx) {
     if (mLayout || mChildren.size() != 1) {
         Widget::performLayout(ctx);
     } else {
@@ -53,11 +53,11 @@ void Popup::draw(NVGcontext* ctx) {
 
     /* Draw a drop shadow */
     NVGpaint shadowPaint = nvgBoxGradient(
-        ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr*2, ds*2,
+        ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr * 2, ds * 2,
         mTheme->mDropShadow, mTheme->mTransparent);
 
     nvgBeginPath(ctx);
-    nvgRect(ctx, mPos.x()-ds,mPos.y()-ds, mSize.x()+2*ds, mSize.y()+2*ds);
+    nvgRect(ctx, mPos.x() - ds, mPos.y() - ds, mSize.x() + 2 * ds, mSize.y() + 2 * ds);
     nvgRoundedRect(ctx, mPos.x(), mPos.y(), mSize.x(), mSize.y(), cr);
     nvgPathWinding(ctx, NVG_HOLE);
     nvgFillPaint(ctx, shadowPaint);
@@ -74,9 +74,9 @@ void Popup::draw(NVGcontext* ctx) {
         sign = 1;
     }
 
-    nvgMoveTo(ctx, base.x() + 15*sign, base.y());
-    nvgLineTo(ctx, base.x() - 1*sign, base.y() - 15);
-    nvgLineTo(ctx, base.x() - 1*sign, base.y() + 15);
+    nvgMoveTo(ctx, base.x() + 15 * sign, base.y());
+    nvgLineTo(ctx, base.x() - 1 * sign, base.y() - 15);
+    nvgLineTo(ctx, base.x() - 1 * sign, base.y() + 15);
 
     nvgFillColor(ctx, mTheme->mWindowPopup);
     nvgFill(ctx);
@@ -85,14 +85,14 @@ void Popup::draw(NVGcontext* ctx) {
     Widget::draw(ctx);
 }
 
-void Popup::save(Serializer &s) const {
+void Popup::save(Serializer& s) const {
     Window::save(s);
     s.set("anchorPos", mAnchorPos);
     s.set("anchorHeight", mAnchorHeight);
     s.set("side", mSide);
 }
 
-bool Popup::load(Serializer &s) {
+bool Popup::load(Serializer& s) {
     if (!Window::load(s)) return false;
     if (!s.get("anchorPos", mAnchorPos)) return false;
     if (!s.get("anchorHeight", mAnchorHeight)) return false;

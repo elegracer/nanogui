@@ -21,13 +21,13 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-GLCanvas::GLCanvas(Widget *parent)
-  : Widget(parent), mBackgroundColor(Vector4i(128, 128, 128, 255)),
+GLCanvas::GLCanvas(Widget* parent) :
+    Widget(parent), mBackgroundColor(Vector4i(128, 128, 128, 255)),
     mDrawBorder(true) {
     mSize = Vector2i(250, 250);
 }
 
-void GLCanvas::drawWidgetBorder(NVGcontext *ctx) const {
+void GLCanvas::drawWidgetBorder(NVGcontext* ctx) const {
     nvgBeginPath(ctx);
     nvgStrokeWidth(ctx, 1.0f);
     nvgRoundedRect(ctx, mPos.x() - 0.5f, mPos.y() - 0.5f,
@@ -39,7 +39,7 @@ void GLCanvas::drawWidgetBorder(NVGcontext *ctx) const {
     nvgStroke(ctx);
 }
 
-void GLCanvas::draw(NVGcontext *ctx) {
+void GLCanvas::draw(NVGcontext* ctx) {
     Widget::draw(ctx);
     nvgEndFrame(ctx);
 
@@ -55,13 +55,14 @@ void GLCanvas::draw(NVGcontext *ctx) {
 
     Vector2i size = (mSize.cast<float>() * pixelRatio).cast<int>(),
              imagePosition = (Vector2f(positionInScreen[0],
-                                       screenSize[1] - positionInScreen[1] -
-                                       (float) mSize[1]) * pixelRatio).cast<int>();
+                                       screenSize[1] - positionInScreen[1] - (float)mSize[1])
+                              * pixelRatio)
+                                 .cast<int>();
 
     GLint storedViewport[4];
     glGetIntegerv(GL_VIEWPORT, storedViewport);
 
-    glViewport(imagePosition[0], imagePosition[1], size[0] , size[1]);
+    glViewport(imagePosition[0], imagePosition[1], size[0], size[1]);
 
     glEnable(GL_SCISSOR_TEST);
     glScissor(imagePosition[0], imagePosition[1], size[0], size[1]);
@@ -76,13 +77,13 @@ void GLCanvas::draw(NVGcontext *ctx) {
                storedViewport[2], storedViewport[3]);
 }
 
-void GLCanvas::save(Serializer &s) const {
+void GLCanvas::save(Serializer& s) const {
     Widget::save(s);
     s.set("backgroundColor", mBackgroundColor);
     s.set("drawBorder", mDrawBorder);
 }
 
-bool GLCanvas::load(Serializer &s) {
+bool GLCanvas::load(Serializer& s) {
     if (!Widget::load(s)) return false;
     if (!s.get("backgroundColor", mBackgroundColor)) return false;
     if (!s.get("drawBorder", mDrawBorder)) return false;

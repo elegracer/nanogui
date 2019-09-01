@@ -17,15 +17,16 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-ColorPicker::ColorPicker(Widget *parent, const Color& color) : PopupButton(parent, "") {
+ColorPicker::ColorPicker(Widget* parent, const Color& color) :
+    PopupButton(parent, "") {
     setBackgroundColor(color);
-    Popup *popup = this->popup();
+    Popup* popup = this->popup();
     popup->setLayout(new GroupLayout());
 
     // initialize callback to do nothing; this is for users to hook into
     // receiving a new color value
-    mCallback = [](const Color &) {};
-    mFinalCallback = [](const Color &) {};
+    mCallback = [](const Color&) {};
+    mFinalCallback = [](const Color&) {};
 
     // set the color wheel to the specified color
     mColorWheel = new ColorWheel(popup, color);
@@ -49,7 +50,7 @@ ColorPicker::ColorPicker(Widget *parent, const Color& color) : PopupButton(paren
         }
     });
 
-    mColorWheel->setCallback([&](const Color &value) {
+    mColorWheel->setCallback([&](const Color& value) {
         mPickButton->setBackgroundColor(value);
         mPickButton->setTextColor(value.contrastingColor());
         mCallback(value);

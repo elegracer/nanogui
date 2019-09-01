@@ -23,21 +23,30 @@ NAMESPACE_BEGIN(nanogui)
  */
 class NANOGUI_EXPORT Window : public Widget {
     friend class Popup;
+
 public:
-    Window(Widget *parent, const std::string &title = "Untitled");
+    Window(Widget* parent, const std::string& title = "Untitled");
 
     /// Return the window title
-    const std::string &title() const { return mTitle; }
+    const std::string& title() const {
+        return mTitle;
+    }
     /// Set the window title
-    void setTitle(const std::string &title) { mTitle = title; }
+    void setTitle(const std::string& title) {
+        mTitle = title;
+    }
 
     /// Is this a model dialog?
-    bool modal() const { return mModal; }
+    bool modal() const {
+        return mModal;
+    }
     /// Set whether or not this is a modal dialog
-    void setModal(bool modal) { mModal = modal; }
+    void setModal(bool modal) {
+        mModal = modal;
+    }
 
     /// Return the panel used to house window buttons
-    Widget *buttonPanel();
+    Widget* buttonPanel();
 
     /// Dispose the window
     void dispose();
@@ -46,27 +55,30 @@ public:
     void center();
 
     /// Draw the window
-    virtual void draw(NVGcontext *ctx) override;
+    virtual void draw(NVGcontext* ctx) override;
     /// Handle window drag events
-    virtual bool mouseDragEvent(const Vector2i &p, const Vector2i &rel, int button, int modifiers) override;
+    virtual bool mouseDragEvent(const Vector2i& p, const Vector2i& rel, int button, int modifiers) override;
     /// Handle mouse events recursively and bring the current window to the top
-    virtual bool mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers) override;
+    virtual bool mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers) override;
     /// Accept scroll events and propagate them to the widget under the mouse cursor
-    virtual bool scrollEvent(const Vector2i &p, const Vector2f &rel) override;
+    virtual bool scrollEvent(const Vector2i& p, const Vector2f& rel) override;
     /// Compute the preferred size of the widget
-    virtual Vector2i preferredSize(NVGcontext *ctx) const override;
+    virtual Vector2i preferredSize(NVGcontext* ctx) const override;
     /// Invoke the associated layout generator to properly place child widgets, if any
-    virtual void performLayout(NVGcontext *ctx) override;
-    virtual void save(Serializer &s) const override;
-    virtual bool load(Serializer &s) override;
+    virtual void performLayout(NVGcontext* ctx) override;
+    virtual void save(Serializer& s) const override;
+    virtual bool load(Serializer& s) override;
+
 protected:
     /// Internal helper function to maintain nested window position values; overridden in \ref Popup
     virtual void refreshRelativePlacement();
+
 protected:
     std::string mTitle;
-    Widget *mButtonPanel;
+    Widget* mButtonPanel;
     bool mModal;
     bool mDrag;
+
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

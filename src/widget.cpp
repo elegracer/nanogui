@@ -19,12 +19,12 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-Widget::Widget(Widget *parent)
-    : mParent(nullptr), mTheme(nullptr), mLayout(nullptr),
-      mPos(Vector2i::Zero()), mSize(Vector2i::Zero()),
-      mFixedSize(Vector2i::Zero()), mVisible(true), mEnabled(true),
-      mFocused(false), mMouseFocus(false), mTooltip(""), mFontSize(-1.0f),
-      mIconExtraScale(1.0f), mCursor(Cursor::Arrow) {
+Widget::Widget(Widget* parent) :
+    mParent(nullptr), mTheme(nullptr), mLayout(nullptr),
+    mPos(Vector2i::Zero()), mSize(Vector2i::Zero()),
+    mFixedSize(Vector2i::Zero()), mVisible(true), mEnabled(true),
+    mFocused(false), mMouseFocus(false), mTooltip(""), mFontSize(-1.0f),
+    mIconExtraScale(1.0f), mCursor(Cursor::Arrow) {
     if (parent)
         parent->addChild(this);
 }
@@ -36,7 +36,7 @@ Widget::~Widget() {
     }
 }
 
-void Widget::setTheme(Theme *theme) {
+void Widget::setTheme(Theme* theme) {
     if (mTheme.get() == theme)
         return;
     mTheme = theme;
@@ -48,14 +48,14 @@ int Widget::fontSize() const {
     return (mFontSize < 0 && mTheme) ? mTheme->mStandardFontSize : mFontSize;
 }
 
-Vector2i Widget::preferredSize(NVGcontext *ctx) const {
+Vector2i Widget::preferredSize(NVGcontext* ctx) const {
     if (mLayout)
         return mLayout->preferredSize(ctx, this);
     else
         return mSize;
 }
 
-void Widget::performLayout(NVGcontext *ctx) {
+void Widget::performLayout(NVGcontext* ctx) {
     if (mLayout) {
         mLayout->performLayout(ctx, this);
     } else {
@@ -63,27 +63,25 @@ void Widget::performLayout(NVGcontext *ctx) {
             Vector2i pref = c->preferredSize(ctx), fix = c->fixedSize();
             c->setSize(Vector2i(
                 fix[0] ? fix[0] : pref[0],
-                fix[1] ? fix[1] : pref[1]
-            ));
+                fix[1] ? fix[1] : pref[1]));
             c->performLayout(ctx);
         }
     }
 }
 
-Widget *Widget::findWidget(const Vector2i &p) {
+Widget* Widget::findWidget(const Vector2i& p) {
     for (auto it = mChildren.rbegin(); it != mChildren.rend(); ++it) {
-        Widget *child = *it;
+        Widget* child = *it;
         if (child->visible() && child->contains(p - mPos))
             return child->findWidget(p - mPos);
     }
     return contains(p) ? this : nullptr;
 }
 
-bool Widget::mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers) {
+bool Widget::mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers) {
     for (auto it = mChildren.rbegin(); it != mChildren.rend(); ++it) {
-        Widget *child = *it;
-        if (child->visible() && child->contains(p - mPos) &&
-            child->mouseButtonEvent(p - mPos, button, down, modifiers))
+        Widget* child = *it;
+        if (child->visible() && child->contains(p - mPos) && child->mouseButtonEvent(p - mPos, button, down, modifiers))
             return true;
     }
     if (button == GLFW_MOUSE_BUTTON_1 && down && !mFocused)
@@ -91,24 +89,23 @@ bool Widget::mouseButtonEvent(const Vector2i &p, int button, bool down, int modi
     return false;
 }
 
-bool Widget::mouseMotionEvent(const Vector2i &p, const Vector2i &rel, int button, int modifiers) {
+bool Widget::mouseMotionEvent(const Vector2i& p, const Vector2i& rel, int button, int modifiers) {
     for (auto it = mChildren.rbegin(); it != mChildren.rend(); ++it) {
-        Widget *child = *it;
+        Widget* child = *it;
         if (!child->visible())
             continue;
         bool contained = child->contains(p - mPos), prevContained = child->contains(p - mPos - rel);
         if (contained != prevContained)
             child->mouseEnterEvent(p, contained);
-        if ((contained || prevContained) &&
-            child->mouseMotionEvent(p - mPos, rel, button, modifiers))
+        if ((contained || prevContained) && child->mouseMotionEvent(p - mPos, rel, button, modifiers))
             return true;
     }
     return false;
 }
 
-bool Widget::scrollEvent(const Vector2i &p, const Vector2f &rel) {
+bool Widget::scrollEvent(const Vector2i& p, const Vector2f& rel) {
     for (auto it = mChildren.rbegin(); it != mChildren.rend(); ++it) {
-        Widget *child = *it;
+        Widget* child = *it;
         if (!child->visible())
             continue;
         if (child->contains(p - mPos) && child->scrollEvent(p - mPos, rel))
@@ -117,11 +114,11 @@ bool Widget::scrollEvent(const Vector2i &p, const Vector2f &rel) {
     return false;
 }
 
-bool Widget::mouseDragEvent(const Vector2i &, const Vector2i &, int, int) {
+bool Widget::mouseDragEvent(const Vector2i&, const Vector2i&, int, int) {
     return false;
 }
 
-bool Widget::mouseEnterEvent(const Vector2i &, bool enter) {
+bool Widget::mouseEnterEvent(const Vector2i&, bool enter) {
     mMouseFocus = enter;
     return false;
 }
@@ -139,7 +136,7 @@ bool Widget::keyboardCharacterEvent(unsigned int) {
     return false;
 }
 
-void Widget::addChild(int index, Widget * widget) {
+void Widget::addChild(int index, Widget* widget) {
     assert(index <= childCount());
     mChildren.insert(mChildren.begin() + index, widget);
     widget->incRef();
@@ -147,48 +144,48 @@ void Widget::addChild(int index, Widget * widget) {
     widget->setTheme(mTheme);
 }
 
-void Widget::addChild(Widget * widget) {
+void Widget::addChild(Widget* widget) {
     addChild(childCount(), widget);
 }
 
-void Widget::removeChild(const Widget *widget) {
+void Widget::removeChild(const Widget* widget) {
     mChildren.erase(std::remove(mChildren.begin(), mChildren.end(), widget), mChildren.end());
     widget->decRef();
 }
 
 void Widget::removeChild(int index) {
-    Widget *widget = mChildren[index];
+    Widget* widget = mChildren[index];
     mChildren.erase(mChildren.begin() + index);
     widget->decRef();
 }
 
-int Widget::childIndex(Widget *widget) const {
+int Widget::childIndex(Widget* widget) const {
     auto it = std::find(mChildren.begin(), mChildren.end(), widget);
     if (it == mChildren.end())
         return -1;
-    return (int) (it - mChildren.begin());
+    return (int)(it - mChildren.begin());
 }
 
-Window *Widget::window() {
-    Widget *widget = this;
+Window* Widget::window() {
+    Widget* widget = this;
     while (true) {
         if (!widget)
             throw std::runtime_error(
                 "Widget:internal error (could not find parent window)");
-        Window *window = dynamic_cast<Window *>(widget);
+        Window* window = dynamic_cast<Window*>(widget);
         if (window)
             return window;
         widget = widget->parent();
     }
 }
 
-Screen *Widget::screen() {
-    Widget *widget = this;
+Screen* Widget::screen() {
+    Widget* widget = this;
     while (true) {
         if (!widget)
             throw std::runtime_error(
                 "Widget:internal error (could not find parent screen)");
-        Screen *screen = dynamic_cast<Screen *>(widget);
+        Screen* screen = dynamic_cast<Screen*>(widget);
         if (screen)
             return screen;
         widget = widget->parent();
@@ -196,20 +193,20 @@ Screen *Widget::screen() {
 }
 
 void Widget::requestFocus() {
-    Widget *widget = this;
+    Widget* widget = this;
     while (widget->parent())
         widget = widget->parent();
-    ((Screen *) widget)->updateFocus(this);
+    ((Screen*)widget)->updateFocus(this);
 }
 
-void Widget::draw(NVGcontext *ctx) {
-    #if NANOGUI_SHOW_WIDGET_BOUNDS
-        nvgStrokeWidth(ctx, 1.0f);
-        nvgBeginPath(ctx);
-        nvgRect(ctx, mPos.x() - 0.5f, mPos.y() - 0.5f, mSize.x() + 1, mSize.y() + 1);
-        nvgStrokeColor(ctx, nvgRGBA(255, 0, 0, 255));
-        nvgStroke(ctx);
-    #endif
+void Widget::draw(NVGcontext* ctx) {
+#if NANOGUI_SHOW_WIDGET_BOUNDS
+    nvgStrokeWidth(ctx, 1.0f);
+    nvgBeginPath(ctx);
+    nvgRect(ctx, mPos.x() - 0.5f, mPos.y() - 0.5f, mSize.x() + 1, mSize.y() + 1);
+    nvgStrokeColor(ctx, nvgRGBA(255, 0, 0, 255));
+    nvgStroke(ctx);
+#endif
 
     if (mChildren.empty())
         return;
@@ -227,7 +224,7 @@ void Widget::draw(NVGcontext *ctx) {
     nvgRestore(ctx);
 }
 
-void Widget::save(Serializer &s) const {
+void Widget::save(Serializer& s) const {
     s.set("position", mPos);
     s.set("size", mSize);
     s.set("fixedSize", mFixedSize);
@@ -236,10 +233,10 @@ void Widget::save(Serializer &s) const {
     s.set("focused", mFocused);
     s.set("tooltip", mTooltip);
     s.set("fontSize", mFontSize);
-    s.set("cursor", (int) mCursor);
+    s.set("cursor", (int)mCursor);
 }
 
-bool Widget::load(Serializer &s) {
+bool Widget::load(Serializer& s) {
     if (!s.get("position", mPos)) return false;
     if (!s.get("size", mSize)) return false;
     if (!s.get("fixedSize", mFixedSize)) return false;

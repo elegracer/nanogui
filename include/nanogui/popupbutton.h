@@ -30,28 +30,40 @@ NAMESPACE_BEGIN(nanogui)
  */
 class NANOGUI_EXPORT PopupButton : public Button {
 public:
-    PopupButton(Widget *parent, const std::string &caption = "Untitled",
+    PopupButton(Widget* parent, const std::string& caption = "Untitled",
                 int buttonIcon = 0);
     virtual ~PopupButton();
 
-    void setChevronIcon(int icon) { mChevronIcon = icon; }
-    int chevronIcon() const { return mChevronIcon; }
+    void setChevronIcon(int icon) {
+        mChevronIcon = icon;
+    }
+    int chevronIcon() const {
+        return mChevronIcon;
+    }
 
     void setSide(Popup::Side popupSide);
-    Popup::Side side() const { return mPopup->side(); }
+    Popup::Side side() const {
+        return mPopup->side();
+    }
 
-    Popup *popup() { return mPopup; }
-    const Popup *popup() const { return mPopup; }
+    Popup* popup() {
+        return mPopup;
+    }
+    const Popup* popup() const {
+        return mPopup;
+    }
 
     virtual void draw(NVGcontext* ctx) override;
-    virtual Vector2i preferredSize(NVGcontext *ctx) const override;
-    virtual void performLayout(NVGcontext *ctx) override;
+    virtual Vector2i preferredSize(NVGcontext* ctx) const override;
+    virtual void performLayout(NVGcontext* ctx) override;
 
-    virtual void save(Serializer &s) const override;
-    virtual bool load(Serializer &s) override;
+    virtual void save(Serializer& s) const override;
+    virtual bool load(Serializer& s) override;
+
 protected:
-    Popup *mPopup;
+    Popup* mPopup;
     int mChevronIcon;
+
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

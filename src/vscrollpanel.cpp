@@ -17,10 +17,11 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-VScrollPanel::VScrollPanel(Widget *parent)
-    : Widget(parent), mChildPreferredHeight(0), mScroll(0.0f), mUpdateLayout(false) { }
+VScrollPanel::VScrollPanel(Widget* parent) :
+    Widget(parent), mChildPreferredHeight(0), mScroll(0.0f), mUpdateLayout(false) {
+}
 
-void VScrollPanel::performLayout(NVGcontext *ctx) {
+void VScrollPanel::performLayout(NVGcontext* ctx) {
     Widget::performLayout(ctx);
 
     if (mChildren.empty())
@@ -28,12 +29,12 @@ void VScrollPanel::performLayout(NVGcontext *ctx) {
     if (mChildren.size() > 1)
         throw std::runtime_error("VScrollPanel should have one child.");
 
-    Widget *child = mChildren[0];
+    Widget* child = mChildren[0];
     mChildPreferredHeight = child->preferredSize(ctx).y();
 
     if (mChildPreferredHeight > mSize.y()) {
-        child->setPosition(Vector2i(0, -mScroll*(mChildPreferredHeight - mSize.y())));
-        child->setSize(Vector2i(mSize.x()-12, mChildPreferredHeight));
+        child->setPosition(Vector2i(0, -mScroll * (mChildPreferredHeight - mSize.y())));
+        child->setSize(Vector2i(mSize.x() - 12, mChildPreferredHeight));
     } else {
         child->setPosition(Vector2i::Zero());
         child->setSize(mSize);
@@ -42,20 +43,19 @@ void VScrollPanel::performLayout(NVGcontext *ctx) {
     child->performLayout(ctx);
 }
 
-Vector2i VScrollPanel::preferredSize(NVGcontext *ctx) const {
+Vector2i VScrollPanel::preferredSize(NVGcontext* ctx) const {
     if (mChildren.empty())
         return Vector2i::Zero();
     return mChildren[0]->preferredSize(ctx) + Vector2i(12, 0);
 }
 
-bool VScrollPanel::mouseDragEvent(const Vector2i &p, const Vector2i &rel,
-                            int button, int modifiers) {
+bool VScrollPanel::mouseDragEvent(const Vector2i& p, const Vector2i& rel,
+                                  int button, int modifiers) {
     if (!mChildren.empty() && mChildPreferredHeight > mSize.y()) {
-        float scrollh = height() *
-            std::min(1.0f, height() / (float)mChildPreferredHeight);
+        float scrollh = height() * std::min(1.0f, height() / (float)mChildPreferredHeight);
 
-        mScroll = std::max((float) 0.0f, std::min((float) 1.0f,
-                     mScroll + rel.y() / (float)(mSize.y() - 8 - scrollh)));
+        mScroll = std::max((float)0.0f, std::min((float)1.0f,
+                                                 mScroll + rel.y() / (float)(mSize.y() - 8 - scrollh)));
         mUpdateLayout = true;
         return true;
     } else {
@@ -63,14 +63,13 @@ bool VScrollPanel::mouseDragEvent(const Vector2i &p, const Vector2i &rel,
     }
 }
 
-bool VScrollPanel::scrollEvent(const Vector2i &p, const Vector2f &rel) {
+bool VScrollPanel::scrollEvent(const Vector2i& p, const Vector2f& rel) {
     if (!mChildren.empty() && mChildPreferredHeight > mSize.y()) {
         float scrollAmount = rel.y() * (mSize.y() / 20.0f);
-        float scrollh = height() *
-            std::min(1.0f, height() / (float)mChildPreferredHeight);
+        float scrollh = height() * std::min(1.0f, height() / (float)mChildPreferredHeight);
 
-        mScroll = std::max((float) 0.0f, std::min((float) 1.0f,
-                mScroll - scrollAmount / (float)(mSize.y() - 8 - scrollh)));
+        mScroll = std::max((float)0.0f, std::min((float)1.0f,
+                                                 mScroll - scrollAmount / (float)(mSize.y() - 8 - scrollh)));
         mUpdateLayout = true;
         return true;
     } else {
@@ -78,14 +77,13 @@ bool VScrollPanel::scrollEvent(const Vector2i &p, const Vector2f &rel) {
     }
 }
 
-void VScrollPanel::draw(NVGcontext *ctx) {
+void VScrollPanel::draw(NVGcontext* ctx) {
     if (mChildren.empty())
         return;
-    Widget *child = mChildren[0];
-    child->setPosition(Vector2i(0, -mScroll*(mChildPreferredHeight - mSize.y())));
+    Widget* child = mChildren[0];
+    child->setPosition(Vector2i(0, -mScroll * (mChildPreferredHeight - mSize.y())));
     mChildPreferredHeight = child->preferredSize(ctx).y();
-    float scrollh = height() *
-        std::min(1.0f, height() / (float) mChildPreferredHeight);
+    float scrollh = height() * std::min(1.0f, height() / (float)mChildPreferredHeight);
 
     if (mUpdateLayout)
         child->performLayout(ctx);
@@ -122,13 +120,13 @@ void VScrollPanel::draw(NVGcontext *ctx) {
     nvgFill(ctx);
 }
 
-void VScrollPanel::save(Serializer &s) const {
+void VScrollPanel::save(Serializer& s) const {
     Widget::save(s);
     s.set("childPreferredHeight", mChildPreferredHeight);
     s.set("scroll", mScroll);
 }
 
-bool VScrollPanel::load(Serializer &s) {
+bool VScrollPanel::load(Serializer& s) {
     if (!Widget::load(s)) return false;
     if (!s.get("childPreferredHeight", mChildPreferredHeight)) return false;
     if (!s.get("scroll", mScroll)) return false;

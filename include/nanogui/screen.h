@@ -27,6 +27,7 @@ NAMESPACE_BEGIN(nanogui)
 class NANOGUI_EXPORT Screen : public Widget {
     friend class Widget;
     friend class Window;
+
 public:
     /**
      * Create a new Screen instance
@@ -77,7 +78,7 @@ public:
      *     invalid profile will result in no context (and therefore no GUI)
      *     being created.
      */
-    Screen(const Vector2i &size, const std::string &caption,
+    Screen(const Vector2i& size, const std::string& caption,
            bool resizable = true, bool fullscreen = false, int colorBits = 8,
            int alphaBits = 8, int depthBits = 24, int stencilBits = 8,
            int nSamples = 0,
@@ -87,16 +88,22 @@ public:
     virtual ~Screen();
 
     /// Get the window title bar caption
-    const std::string &caption() const { return mCaption; }
+    const std::string& caption() const {
+        return mCaption;
+    }
 
     /// Set the window title bar caption
-    void setCaption(const std::string &caption);
+    void setCaption(const std::string& caption);
 
     /// Return the screen's background color
-    const Color &background() const { return mBackground; }
+    const Color& background() const {
+        return mBackground;
+    }
 
     /// Set the screen's background color
-    void setBackground(const Color &background) { mBackground = background; }
+    void setBackground(const Color& background) {
+        mBackground = background;
+    }
 
     /// Set the top-level window visibility (no effect on full-screen windows)
     void setVisible(bool visible);
@@ -108,13 +115,18 @@ public:
     virtual void drawAll();
 
     /// Draw the window contents --- put your OpenGL draw calls here
-    virtual void drawContents() { /* To be overridden */ }
+    virtual void drawContents() { /* To be overridden */
+    }
 
     /// Return the ratio between pixel and device coordinates (e.g. >= 2 on Mac Retina displays)
-    float pixelRatio() const { return mPixelRatio; }
+    float pixelRatio() const {
+        return mPixelRatio;
+    }
 
     /// Handle a file drop event
-    virtual bool dropEvent(const std::vector<std::string> & /* filenames */) { return false; /* To be overridden */ }
+    virtual bool dropEvent(const std::vector<std::string>& /* filenames */) {
+        return false; /* To be overridden */
+    }
 
     /// Default keyboard event handler
     virtual bool keyboardEvent(int key, int scancode, int action, int modifiers);
@@ -126,20 +138,34 @@ public:
     virtual bool resizeEvent(const Vector2i& size);
 
     /// Set the resize callback
-    std::function<void(Vector2i)> resizeCallback() const { return mResizeCallback; }
-    void setResizeCallback(const std::function<void(Vector2i)> &callback) { mResizeCallback = callback; }
+    std::function<void(Vector2i)> resizeCallback() const {
+        return mResizeCallback;
+    }
+    void setResizeCallback(const std::function<void(Vector2i)>& callback) {
+        mResizeCallback = callback;
+    }
 
     /// Return the last observed mouse position value
-    Vector2i mousePos() const { return mMousePos; }
+    Vector2i mousePos() const {
+        return mMousePos;
+    }
 
     /// Return a pointer to the underlying GLFW window data structure
-    GLFWwindow *glfwWindow() { return mGLFWWindow; }
+    GLFWwindow* glfwWindow() {
+        return mGLFWWindow;
+    }
 
     /// Return a pointer to the underlying nanoVG draw context
-    NVGcontext *nvgContext() { return mNVGContext; }
+    NVGcontext* nvgContext() {
+        return mNVGContext;
+    }
 
-    void setShutdownGLFWOnDestruct(bool v) { mShutdownGLFWOnDestruct = v; }
-    bool shutdownGLFWOnDestruct() { return mShutdownGLFWOnDestruct; }
+    void setShutdownGLFWOnDestruct(bool v) {
+        mShutdownGLFWOnDestruct = v;
+    }
+    bool shutdownGLFWOnDestruct() {
+        return mShutdownGLFWOnDestruct;
+    }
 
     using Widget::performLayout;
 
@@ -166,36 +192,36 @@ public:
     Screen();
 
     /// Initialize the \ref Screen
-    void initialize(GLFWwindow *window, bool shutdownGLFWOnDestruct);
+    void initialize(GLFWwindow* window, bool shutdownGLFWOnDestruct);
 
     /* Event handlers */
     bool cursorPosCallbackEvent(double x, double y);
     bool mouseButtonCallbackEvent(int button, int action, int modifiers);
     bool keyCallbackEvent(int key, int scancode, int action, int mods);
     bool charCallbackEvent(unsigned int codepoint);
-    bool dropCallbackEvent(int count, const char **filenames);
+    bool dropCallbackEvent(int count, const char** filenames);
     bool scrollCallbackEvent(double x, double y);
     bool resizeCallbackEvent(int width, int height);
 
     /* Internal helper functions */
-    void updateFocus(Widget *widget);
-    void disposeWindow(Window *window);
-    void centerWindow(Window *window);
-    void moveWindowToFront(Window *window);
+    void updateFocus(Widget* widget);
+    void disposeWindow(Window* window);
+    void centerWindow(Window* window);
+    void moveWindowToFront(Window* window);
     void drawWidgets();
 
 protected:
-    GLFWwindow *mGLFWWindow;
-    NVGcontext *mNVGContext;
-    GLFWcursor *mCursors[(int) Cursor::CursorCount];
+    GLFWwindow* mGLFWWindow;
+    NVGcontext* mNVGContext;
+    GLFWcursor* mCursors[(int)Cursor::CursorCount];
     Cursor mCursor;
-    std::vector<Widget *> mFocusPath;
+    std::vector<Widget*> mFocusPath;
     Vector2i mFBSize;
     float mPixelRatio;
     int mMouseState, mModifiers;
     Vector2i mMousePos;
     bool mDragActive;
-    Widget *mDragWidget = nullptr;
+    Widget* mDragWidget = nullptr;
     double mLastInteraction;
     bool mProcessEvents;
     Color mBackground;
@@ -203,6 +229,7 @@ protected:
     bool mShutdownGLFWOnDestruct;
     bool mFullscreen;
     std::function<void(Vector2i)> mResizeCallback;
+
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

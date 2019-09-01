@@ -20,7 +20,9 @@
 #include <set>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-namespace half_float { class half; }
+namespace half_float {
+class half;
+}
 #endif
 
 NAMESPACE_BEGIN(nanogui)
@@ -34,7 +36,8 @@ NAMESPACE_BEGIN(detail)
  * are in :ref:`file_nanogui_serializer_core.h`, see :class:`nanogui::Serializer`.
  * \endrst
  */
-template <typename T> struct serialization_helper;
+template <typename T>
+struct serialization_helper;
 NAMESPACE_END(detail)
 
 /**
@@ -57,18 +60,19 @@ class NANOGUI_EXPORT Serializer {
 protected:
 // this friendship breaks the documentation
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-    template <typename T> friend struct detail::serialization_helper;
+    template <typename T>
+    friend struct detail::serialization_helper;
 #endif
 
 public:
     /// Create a new serialized file for reading or writing
-    Serializer(const std::string &filename, bool write);
+    Serializer(const std::string& filename, bool write);
 
     /// Release all resources
     ~Serializer();
 
     /// Check whether a file contains serialized data
-    static bool isSerializedFile(const std::string &filename);
+    static bool isSerializedFile(const std::string& filename);
 
     /// Return the current size of the output file
     size_t size();
@@ -77,7 +81,7 @@ public:
      * Push a name prefix onto the stack (use this to isolate
      * identically-named data fields)
      */
-    void push(const std::string &name);
+    void push(const std::string& name);
 
     /// Pop a name prefix from the stack
     void pop();
@@ -91,13 +95,18 @@ public:
      * When enabled, missing attributes cause a warning to be printed,
      * but \ref get() does not throw an exception.
      */
-    void setCompatibility(bool compatibility) { mCompatibility = compatibility; }
+    void setCompatibility(bool compatibility) {
+        mCompatibility = compatibility;
+    }
 
     /// Return whether compatibility mode is enabled
-    bool compatibility() { return mCompatibility; }
+    bool compatibility() {
+        return mCompatibility;
+    }
 
     /// Store a field in the serialized file (when opened with ``write=true``)
-    template <typename T> void set(const std::string &name, const T &value) {
+    template <typename T>
+    void set(const std::string& name, const T& value) {
         typedef detail::serialization_helper<T> helper;
         set_base(name, helper::type_id());
         if (!name.empty())
@@ -108,7 +117,8 @@ public:
     }
 
     /// Retrieve a field from the serialized file (when opened with ``write=false``)
-    template <typename T> bool get(const std::string &name, T &value) {
+    template <typename T>
+    bool get(const std::string& name, T& value) {
         typedef detail::serialization_helper<T> helper;
         if (!get_base(name, helper::type_id()))
             return false;
@@ -119,16 +129,18 @@ public:
             pop();
         return true;
     }
+
 protected:
-    void set_base(const std::string &name, const std::string &type_id);
-    bool get_base(const std::string &name, const std::string &type_id);
+    void set_base(const std::string& name, const std::string& type_id);
+    bool get_base(const std::string& name, const std::string& type_id);
 
     void writeTOC();
     void readTOC();
 
-    void read(void *p, size_t size);
-    void write(const void *p, size_t size);
+    void read(void* p, size_t size);
+    void write(const void* p, size_t size);
     void seek(size_t pos);
+
 private:
     std::string mFilename;
     bool mWrite, mCompatibility;
@@ -149,76 +161,95 @@ NAMESPACE_BEGIN(detail)
  * \tparam T
  *     The type to explicity be serialized.
  */
-template <typename T, typename SFINAE = void> struct serialization_traits { };
+template <typename T, typename SFINAE = void>
+struct serialization_traits {};
 
 // bypass template specializations for now
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
-template <> struct serialization_traits<int8_t>           { const char *type_id = "u8";  };
-template <> struct serialization_traits<uint8_t>          { const char *type_id = "s8";  };
-template <> struct serialization_traits<int16_t>          { const char *type_id = "u16"; };
-template <> struct serialization_traits<uint16_t>         { const char *type_id = "s16"; };
-template <> struct serialization_traits<int32_t>          { const char *type_id = "u32"; };
-template <> struct serialization_traits<uint32_t>         { const char *type_id = "s32"; };
-template <> struct serialization_traits<int64_t>          { const char *type_id = "u64"; };
-template <> struct serialization_traits<uint64_t>         { const char *type_id = "s64"; };
-template <> struct serialization_traits<half_float::half> { const char *type_id = "f16"; };
-template <> struct serialization_traits<float>            { const char *type_id = "f32"; };
-template <> struct serialization_traits<double>           { const char *type_id = "f64"; };
-template <> struct serialization_traits<bool>             { const char *type_id = "b8";  };
-template <> struct serialization_traits<char>             { const char *type_id = "c8";  };
+template <>
+struct serialization_traits<int8_t> { const char* type_id = "u8"; };
+template <>
+struct serialization_traits<uint8_t> { const char* type_id = "s8"; };
+template <>
+struct serialization_traits<int16_t> { const char* type_id = "u16"; };
+template <>
+struct serialization_traits<uint16_t> { const char* type_id = "s16"; };
+template <>
+struct serialization_traits<int32_t> { const char* type_id = "u32"; };
+template <>
+struct serialization_traits<uint32_t> { const char* type_id = "s32"; };
+template <>
+struct serialization_traits<int64_t> { const char* type_id = "u64"; };
+template <>
+struct serialization_traits<uint64_t> { const char* type_id = "s64"; };
+template <>
+struct serialization_traits<half_float::half> { const char* type_id = "f16"; };
+template <>
+struct serialization_traits<float> { const char* type_id = "f32"; };
+template <>
+struct serialization_traits<double> { const char* type_id = "f64"; };
+template <>
+struct serialization_traits<bool> { const char* type_id = "b8"; };
+template <>
+struct serialization_traits<char> { const char* type_id = "c8"; };
 
-template <typename T> struct serialization_traits<T> :
-    serialization_traits<typename std::underlying_type<T>::type,
-                         typename std::enable_if<std::is_enum<T>::value>::type> { };
+template <typename T>
+struct serialization_traits<T> : serialization_traits<typename std::underlying_type<T>::type,
+                                                      typename std::enable_if<std::is_enum<T>::value>::type> {};
 
-template <typename T> struct serialization_helper {
-    static std::string type_id() { return serialization_traits<T>().type_id; }
+template <typename T>
+struct serialization_helper {
+    static std::string type_id() {
+        return serialization_traits<T>().type_id;
+    }
 
-    static void write(Serializer &s, const T *value, size_t count) {
+    static void write(Serializer& s, const T* value, size_t count) {
         s.write(value, sizeof(T) * count);
     }
 
-    static void read(Serializer &s, T *value, size_t count) {
+    static void read(Serializer& s, T* value, size_t count) {
         s.read(value, sizeof(T) * count);
     }
 };
 
-template <> struct serialization_helper<std::string> {
-    static std::string type_id() { return "Vc8"; }
+template <>
+struct serialization_helper<std::string> {
+    static std::string type_id() {
+        return "Vc8";
+    }
 
-    static void write(Serializer &s, const std::string *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
-            uint32_t length = (uint32_t) value->length();
+    static void write(Serializer& s, const std::string* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
+            uint32_t length = (uint32_t)value->length();
             s.write(&length, sizeof(uint32_t));
-            s.write((char *) value->data(), sizeof(char) * value->length());
+            s.write((char*)value->data(), sizeof(char) * value->length());
             value++;
         }
     }
 
-    static void read(Serializer &s, std::string *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
+    static void read(Serializer& s, std::string* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
             uint32_t length;
             s.read(&length, sizeof(uint32_t));
             value->resize(length);
-            s.read((char *) value->data(), sizeof(char) * length);
+            s.read((char*)value->data(), sizeof(char) * length);
             value++;
         }
     }
 };
 
-template <typename T1, typename T2> struct serialization_helper<std::pair<T1, T2>> {
+template <typename T1, typename T2>
+struct serialization_helper<std::pair<T1, T2>> {
     static std::string type_id() {
-        return "P" +
-            serialization_helper<T1>::type_id() +
-            serialization_helper<T2>::type_id();
+        return "P" + serialization_helper<T1>::type_id() + serialization_helper<T2>::type_id();
     }
 
-    static void write(Serializer &s, const std::pair<T1, T1> *value, size_t count) {
-        std::unique_ptr<T1> first (new T1[count]);
+    static void write(Serializer& s, const std::pair<T1, T1>* value, size_t count) {
+        std::unique_ptr<T1> first(new T1[count]);
         std::unique_ptr<T2> second(new T2[count]);
 
-        for (size_t i = 0; i<count; ++i) {
-            first.get()[i]  = value[i].first;
+        for (size_t i = 0; i < count; ++i) {
+            first.get()[i] = value[i].first;
             second.get()[i] = value[i].second;
         }
 
@@ -226,36 +257,37 @@ template <typename T1, typename T2> struct serialization_helper<std::pair<T1, T2
         serialization_helper<T2>::write(s, second.get(), count);
     }
 
-    static void read(Serializer &s, std::pair<T1, T1> *value, size_t count) {
-        std::unique_ptr<T1> first (new T1[count]);
+    static void read(Serializer& s, std::pair<T1, T1>* value, size_t count) {
+        std::unique_ptr<T1> first(new T1[count]);
         std::unique_ptr<T2> second(new T2[count]);
 
         serialization_helper<T1>::read(s, first.get(), count);
         serialization_helper<T2>::read(s, second.get(), count);
 
-        for (size_t i = 0; i<count; ++i) {
+        for (size_t i = 0; i < count; ++i) {
             value[i].first = first.get()[i];
             value[i].second = second.get()[i];
         }
     }
 };
 
-template <typename T> struct serialization_helper<std::vector<T>> {
+template <typename T>
+struct serialization_helper<std::vector<T>> {
     static std::string type_id() {
         return "V" + serialization_helper<T>::type_id();
     }
 
-    static void write(Serializer &s, const std::vector<T> *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
-            uint32_t size = (uint32_t) value->size();
+    static void write(Serializer& s, const std::vector<T>* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
+            uint32_t size = (uint32_t)value->size();
             s.write(&size, sizeof(uint32_t));
             serialization_helper<T>::write(s, value->data(), size);
             value++;
         }
     }
 
-    static void read(Serializer &s, std::vector<T> *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
+    static void read(Serializer& s, std::vector<T>* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
             uint32_t size = 0;
             s.read(&size, sizeof(uint32_t));
             value->resize(size);
@@ -265,13 +297,14 @@ template <typename T> struct serialization_helper<std::vector<T>> {
     }
 };
 
-template <typename T> struct serialization_helper<std::set<T>> {
+template <typename T>
+struct serialization_helper<std::set<T>> {
     static std::string type_id() {
         return "S" + serialization_helper<T>::type_id();
     }
 
-    static void write(Serializer &s, const std::set<T> *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
+    static void write(Serializer& s, const std::set<T>* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
             std::vector<T> temp(value->size());
             uint32_t idx = 0;
             for (auto it = value->begin(); it != value->end(); ++it)
@@ -281,12 +314,12 @@ template <typename T> struct serialization_helper<std::set<T>> {
         }
     }
 
-    static void read(Serializer &s, std::set<T> *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
+    static void read(Serializer& s, std::set<T>* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
             std::vector<T> temp;
             serialization_helper<std::vector<T>>::read(s, &temp, 1);
             value->clear();
-            for (auto k: temp)
+            for (auto k : temp)
                 value->insert(k);
             value++;
         }
@@ -301,30 +334,31 @@ struct serialization_helper<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, 
         return "M" + serialization_helper<Scalar>::type_id();
     }
 
-    static void write(Serializer &s, const Matrix *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
+    static void write(Serializer& s, const Matrix* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
             uint32_t rows = value->rows(), cols = value->cols();
             s.write(&rows, sizeof(uint32_t));
             s.write(&cols, sizeof(uint32_t));
-            serialization_helper<Scalar>::write(s, value->data(), rows*cols);
+            serialization_helper<Scalar>::write(s, value->data(), rows * cols);
             value++;
         }
     }
 
-    static void read(Serializer &s, Matrix *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
+    static void read(Serializer& s, Matrix* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
             uint32_t rows = 0, cols = 0;
             s.read(&rows, sizeof(uint32_t));
             s.read(&cols, sizeof(uint32_t));
             value->resize(rows, cols);
-            serialization_helper<Scalar>::read(s, value->data(), rows*cols);
+            serialization_helper<Scalar>::read(s, value->data(), rows * cols);
             value++;
         }
     }
 };
 
-template <> struct serialization_helper<nanogui::Color>
-    : public serialization_helper<Eigen::Matrix<float, 4, 1>> { };
+template <>
+struct serialization_helper<nanogui::Color>
+    : public serialization_helper<Eigen::Matrix<float, 4, 1>> {};
 
 template <typename Scalar, int Options>
 struct serialization_helper<Eigen::Quaternion<Scalar, Options>>
@@ -335,15 +369,15 @@ struct serialization_helper<Eigen::Quaternion<Scalar, Options>>
         return "Q" + serialization_helper<Scalar>::type_id();
     }
 
-    static void write(Serializer &s, const Quat *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
+    static void write(Serializer& s, const Quat* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
             serialization_helper<Scalar>::write(s, value->coeffs().data(), 4);
             value++;
         }
     }
 
-    static void read(Serializer &s, Quat *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
+    static void read(Serializer& s, Quat* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
             serialization_helper<Scalar>::read(s, value->coeffs().data(), 4);
             value++;
         }
@@ -356,15 +390,15 @@ struct serialization_helper<Widget> {
         return "W";
     }
 
-    static void write(Serializer &s, const Widget *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
+    static void write(Serializer& s, const Widget* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
             if (!value->id().empty()) {
                 if (count > 1)
                     s.push(value->id());
                 value->save(s);
             }
 
-            for (const Widget *child : value->children()) {
+            for (const Widget* child : value->children()) {
                 if (child->id().empty())
                     write(s, child, 1);
                 else
@@ -378,15 +412,15 @@ struct serialization_helper<Widget> {
         }
     }
 
-    static void read(Serializer &s, Widget *value, size_t count) {
-        for (size_t i = 0; i<count; ++i) {
+    static void read(Serializer& s, Widget* value, size_t count) {
+        for (size_t i = 0; i < count; ++i) {
             if (!value->id().empty()) {
                 if (count > 1)
                     s.push(value->id());
                 value->load(s);
             }
 
-            for (Widget *child : value->children()) {
+            for (Widget* child : value->children()) {
                 if (child->id().empty())
                     read(s, child, 1);
                 else

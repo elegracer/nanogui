@@ -45,32 +45,48 @@ public:
      *     \ref nanogui::CheckBox::mPushed for the difference between "pushed"
      *     and "checked".
      */
-    CheckBox(Widget *parent, const std::string &caption = "Untitled",
-             const std::function<void(bool)> &callback = std::function<void(bool)>());
+    CheckBox(Widget* parent, const std::string& caption = "Untitled",
+             const std::function<void(bool)>& callback = std::function<void(bool)>());
 
     /// The caption of this CheckBox.
-    const std::string &caption() const { return mCaption; }
+    const std::string& caption() const {
+        return mCaption;
+    }
 
     /// Sets the caption of this CheckBox.
-    void setCaption(const std::string &caption) { mCaption = caption; }
+    void setCaption(const std::string& caption) {
+        mCaption = caption;
+    }
 
     /// Whether or not this CheckBox is currently checked.
-    const bool &checked() const { return mChecked; }
+    const bool& checked() const {
+        return mChecked;
+    }
 
     /// Sets whether or not this CheckBox is currently checked.
-    void setChecked(const bool &checked) { mChecked = checked; }
+    void setChecked(const bool& checked) {
+        mChecked = checked;
+    }
 
     /// Whether or not this CheckBox is currently pushed.  See \ref nanogui::CheckBox::mPushed.
-    const bool &pushed() const { return mPushed; }
+    const bool& pushed() const {
+        return mPushed;
+    }
 
     /// Sets whether or not this CheckBox is currently pushed.  See \ref nanogui::CheckBox::mPushed.
-    void setPushed(const bool &pushed) { mPushed = pushed; }
+    void setPushed(const bool& pushed) {
+        mPushed = pushed;
+    }
 
     /// Returns the current callback of this CheckBox.
-    std::function<void(bool)> callback() const { return mCallback; }
+    std::function<void(bool)> callback() const {
+        return mCallback;
+    }
 
     /// Sets the callback to be executed when this CheckBox is checked / unchecked.
-    void setCallback(const std::function<void(bool)> &callback) { mCallback = callback; }
+    void setCallback(const std::function<void(bool)>& callback) {
+        mCallback = callback;
+    }
 
     /**
      * The mouse button callback will return ``true`` when all three conditions are met:
@@ -90,19 +106,19 @@ public:
      * clicks on the CheckBox and releases away from the bounds of the CheckBox,
      * \ref nanogui::CheckBox::mPushed is simply set back to ``false``.
      */
-    virtual bool mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers) override;
+    virtual bool mouseButtonEvent(const Vector2i& p, int button, bool down, int modifiers) override;
 
     /// The preferred size of this CheckBox.
-    virtual Vector2i preferredSize(NVGcontext *ctx) const override;
+    virtual Vector2i preferredSize(NVGcontext* ctx) const override;
 
     /// Draws this CheckBox.
-    virtual void draw(NVGcontext *ctx) override;
+    virtual void draw(NVGcontext* ctx) override;
 
     /// Saves this CheckBox to the specified Serializer.
-    virtual void save(Serializer &s) const override;
+    virtual void save(Serializer& s) const override;
 
     /// Loads the state of the specified Serializer to this CheckBox.
-    virtual bool load(Serializer &s) override;
+    virtual bool load(Serializer& s) override;
 
 protected:
     /// The caption text of this CheckBox.

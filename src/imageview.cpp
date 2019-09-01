@@ -20,28 +20,28 @@
 NAMESPACE_BEGIN(nanogui)
 
 namespace {
-    std::vector<std::string> tokenize(const std::string &string,
-                                      const std::string &delim = "\n",
-                                      bool includeEmpty = false) {
-        std::string::size_type lastPos = 0, pos = string.find_first_of(delim, lastPos);
-        std::vector<std::string> tokens;
+std::vector<std::string> tokenize(const std::string& string,
+                                  const std::string& delim = "\n",
+                                  bool includeEmpty = false) {
+    std::string::size_type lastPos = 0, pos = string.find_first_of(delim, lastPos);
+    std::vector<std::string> tokens;
 
-        while (lastPos != std::string::npos) {
-            std::string substr = string.substr(lastPos, pos - lastPos);
-            if (!substr.empty() || includeEmpty)
-                tokens.push_back(std::move(substr));
-            lastPos = pos;
-            if (lastPos != std::string::npos) {
-                lastPos += 1;
-                pos = string.find_first_of(delim, lastPos);
-            }
+    while (lastPos != std::string::npos) {
+        std::string substr = string.substr(lastPos, pos - lastPos);
+        if (!substr.empty() || includeEmpty)
+            tokens.push_back(std::move(substr));
+        lastPos = pos;
+        if (lastPos != std::string::npos) {
+            lastPos += 1;
+            pos = string.find_first_of(delim, lastPos);
         }
-
-        return tokens;
     }
 
-    constexpr char const *const defaultImageViewVertexShader =
-        R"(#version 330
+    return tokens;
+}
+
+constexpr char const* const defaultImageViewVertexShader =
+    R"(#version 330
         uniform vec2 scaleFactor;
         uniform vec2 position;
         in vec2 vertex;
@@ -55,8 +55,8 @@ namespace {
 
         })";
 
-    constexpr char const *const defaultImageViewFragmentShader =
-        R"(#version 330
+constexpr char const* const defaultImageViewFragmentShader =
+    R"(#version 330
         uniform sampler2D image;
         out vec4 color;
         in vec2 uv;
@@ -64,10 +64,10 @@ namespace {
             color = texture(image, uv);
         })";
 
-}
+} // namespace
 
-ImageView::ImageView(Widget* parent, GLuint imageID)
-    : Widget(parent), mImageID(imageID), mScale(1.0f), mOffset(Vector2f::Zero()),
+ImageView::ImageView(Widget* parent, GLuint imageID) :
+    Widget(parent), mImageID(imageID), mScale(1.0f), mOffset(Vector2f::Zero()),
     mFixedScale(false), mFixedOffset(false), mPixelInfoCallback(nullptr) {
     updateImageParameters();
     mShader.init("ImageViewShader", defaultImageViewVertexShader,
@@ -109,7 +109,7 @@ Vector2f ImageView::clampedImageCoordinateAt(const Vector2f& position) const {
 }
 
 Vector2f ImageView::positionForCoordinate(const Vector2f& imageCoordinate) const {
-    return mScale*imageCoordinate + mOffset;
+    return mScale * imageCoordinate + mOffset;
 }
 
 void ImageView::setImageCoordinateAt(const Vector2f& position, const Vector2f& imageCoordinate) {
@@ -261,8 +261,15 @@ bool ImageView::keyboardCharacterEvent(unsigned int codepoint) {
             return true;
         }
         break;
-    case '1': case '2': case '3': case '4': case '5':
-    case '6': case '7': case '8': case '9':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
         if (!mFixedScale) {
             setScaleCentered(1 << (codepoint - '1'));
             return true;

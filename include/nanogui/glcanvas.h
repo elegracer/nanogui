@@ -49,31 +49,40 @@ public:
      * \param parent
      *     The Widget to attach this GLCanvas to.
      */
-    GLCanvas(Widget *parent);
+    GLCanvas(Widget* parent);
 
     /// Returns the background color.
-    const Color &backgroundColor() const { return mBackgroundColor; }
+    const Color& backgroundColor() const {
+        return mBackgroundColor;
+    }
 
     /// Sets the background color.
-    void setBackgroundColor(const Color &backgroundColor) { mBackgroundColor = backgroundColor; }
+    void setBackgroundColor(const Color& backgroundColor) {
+        mBackgroundColor = backgroundColor;
+    }
 
     /// Set whether to draw the widget border or not.
-    void setDrawBorder(const bool bDrawBorder) { mDrawBorder = bDrawBorder; }
+    void setDrawBorder(const bool bDrawBorder) {
+        mDrawBorder = bDrawBorder;
+    }
 
     /// Return whether the widget border gets drawn or not.
-    const bool &drawBorder() const { return mDrawBorder; }
+    const bool& drawBorder() const {
+        return mDrawBorder;
+    }
 
     /// Draw the canvas.
-    virtual void draw(NVGcontext *ctx) override;
+    virtual void draw(NVGcontext* ctx) override;
 
     /// Draw the GL scene. Override this method to draw the actual GL content.
-    virtual void drawGL() {}
+    virtual void drawGL() {
+    }
 
     /// Save the state of this GLCanvas to the specified Serializer.
-    virtual void save(Serializer &s) const override;
+    virtual void save(Serializer& s) const override;
 
     /// Set the state of this GLCanvas from the specified Serializer.
-    virtual bool load(Serializer &s) override;
+    virtual bool load(Serializer& s) override;
 
 protected:
     /// Internal helper function for drawing the widget border

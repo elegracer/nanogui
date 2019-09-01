@@ -12,9 +12,9 @@
 #include <nanogui/glutil.h>
 
 #if defined(WIN32)
-#  if !defined(__clang__)
-#    include <malloc.h>
-#  endif
+#if !defined(__clang__)
+#include <malloc.h>
+#endif
 #endif
 
 #include <iostream>
@@ -23,11 +23,11 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-static GLuint createShader_helper(GLint type, const std::string &name,
-                                  const std::string &defines,
+static GLuint createShader_helper(GLint type, const std::string& name,
+                                  const std::string& defines,
                                   std::string shader_string) {
     if (shader_string.empty())
-        return (GLuint) 0;
+        return (GLuint)0;
 
     if (!defines.empty()) {
         if (shader_string.length() > 8 && shader_string.substr(0, 8) == "#version") {
@@ -46,7 +46,7 @@ static GLuint createShader_helper(GLint type, const std::string &name,
     }
 
     GLuint id = glCreateShader(type);
-    const char *shader_string_const = shader_string.c_str();
+    const char* shader_string_const = shader_string.c_str();
     glShaderSource(id, 1, &shader_string_const, nullptr);
     glCompileShader(id);
 
@@ -63,9 +63,11 @@ static GLuint createShader_helper(GLint type, const std::string &name,
         else if (type == GL_GEOMETRY_SHADER)
             std::cerr << "geometry shader";
         std::cerr << " \"" << name << "\":" << std::endl;
-        std::cerr << shader_string << std::endl << std::endl;
+        std::cerr << shader_string << std::endl
+                  << std::endl;
         glGetShaderInfoLog(id, 512, nullptr, buffer);
-        std::cerr << "Error: " << std::endl << buffer << std::endl;
+        std::cerr << "Error: " << std::endl
+                  << buffer << std::endl;
         throw std::runtime_error("Shader compilation failed!");
     }
 
@@ -73,11 +75,11 @@ static GLuint createShader_helper(GLint type, const std::string &name,
 }
 
 bool GLShader::initFromFiles(
-    const std::string &name,
-    const std::string &vertex_fname,
-    const std::string &fragment_fname,
-    const std::string &geometry_fname) {
-    auto file_to_string = [](const std::string &filename) -> std::string {
+    const std::string& name,
+    const std::string& vertex_fname,
+    const std::string& fragment_fname,
+    const std::string& geometry_fname) {
+    auto file_to_string = [](const std::string& filename) -> std::string {
         if (filename.empty())
             return "";
         std::ifstream t(filename);
@@ -91,10 +93,10 @@ bool GLShader::initFromFiles(
                 file_to_string(geometry_fname));
 }
 
-bool GLShader::init(const std::string &name,
-                    const std::string &vertex_str,
-                    const std::string &fragment_str,
-                    const std::string &geometry_str) {
+bool GLShader::init(const std::string& name,
+                    const std::string& vertex_str,
+                    const std::string& fragment_str,
+                    const std::string& geometry_str) {
     std::string defines;
     for (auto def : mDefinitions)
         defines += std::string("#define ") + def.first + std::string(" ") + def.second + "\n";
@@ -129,7 +131,8 @@ bool GLShader::init(const std::string &name,
     if (status != GL_TRUE) {
         char buffer[512];
         glGetProgramInfoLog(mProgramShader, 512, nullptr, buffer);
-        std::cerr << "Linker error (" << mName << "): " << std::endl << buffer << std::endl;
+        std::cerr << "Linker error (" << mName << "): " << std::endl
+                  << buffer << std::endl;
         mProgramShader = 0;
         throw std::runtime_error("Shader linking failed!");
     }
@@ -142,14 +145,14 @@ void GLShader::bind() {
     glBindVertexArray(mVertexArrayObject);
 }
 
-GLint GLShader::attrib(const std::string &name, bool warn) const {
+GLint GLShader::attrib(const std::string& name, bool warn) const {
     GLint id = glGetAttribLocation(mProgramShader, name.c_str());
     if (id == -1 && warn)
         std::cerr << mName << ": warning: did not find attrib " << name << std::endl;
     return id;
 }
 
-void GLShader::setUniform(const std::string &name, const GLUniformBuffer &buf, bool warn) {
+void GLShader::setUniform(const std::string& name, const GLUniformBuffer& buf, bool warn) {
     GLuint blockIndex = glGetUniformBlockIndex(mProgramShader, name.c_str());
     if (blockIndex == GL_INVALID_INDEX) {
         if (warn)
@@ -159,16 +162,16 @@ void GLShader::setUniform(const std::string &name, const GLUniformBuffer &buf, b
     glUniformBlockBinding(mProgramShader, blockIndex, buf.getBindingPoint());
 }
 
-GLint GLShader::uniform(const std::string &name, bool warn) const {
+GLint GLShader::uniform(const std::string& name, bool warn) const {
     GLint id = glGetUniformLocation(mProgramShader, name.c_str());
     if (id == -1 && warn)
         std::cerr << mName << ": warning: did not find uniform " << name << std::endl;
     return id;
 }
 
-void GLShader::uploadAttrib(const std::string &name, size_t size, int dim,
+void GLShader::uploadAttrib(const std::string& name, size_t size, int dim,
                             uint32_t compSize, GLuint glType, bool integral,
-                            const void *data, int version) {
+                            const void* data, int version) {
     int attribID = 0;
     if (name != "indices") {
         attribID = attrib(name);
@@ -179,10 +182,10 @@ void GLShader::uploadAttrib(const std::string &name, size_t size, int dim,
     GLuint bufferID;
     auto it = mBufferObjects.find(name);
     if (it != mBufferObjects.end()) {
-        Buffer &buffer = it->second;
+        Buffer& buffer = it->second;
         bufferID = it->second.id;
         buffer.version = version;
-        buffer.size = (GLuint) size;
+        buffer.size = (GLuint)size;
         buffer.compSize = compSize;
     } else {
         glGenBuffers(1, &bufferID);
@@ -191,11 +194,11 @@ void GLShader::uploadAttrib(const std::string &name, size_t size, int dim,
         buffer.glType = glType;
         buffer.dim = dim;
         buffer.compSize = compSize;
-        buffer.size = (GLuint) size;
+        buffer.size = (GLuint)size;
         buffer.version = version;
         mBufferObjects[name] = buffer;
     }
-    size_t totalSize = size * (size_t) compSize;
+    size_t totalSize = size * (size_t)compSize;
 
     if (name == "indices") {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID);
@@ -212,17 +215,17 @@ void GLShader::uploadAttrib(const std::string &name, size_t size, int dim,
     }
 }
 
-void GLShader::downloadAttrib(const std::string &name, size_t size, int /* dim */,
-                             uint32_t compSize, GLuint /* glType */, void *data) {
+void GLShader::downloadAttrib(const std::string& name, size_t size, int /* dim */,
+                              uint32_t compSize, GLuint /* glType */, void* data) {
     auto it = mBufferObjects.find(name);
     if (it == mBufferObjects.end())
         throw std::runtime_error("downloadAttrib(" + mName + ", " + name + ") : buffer not found!");
 
-    const Buffer &buf = it->second;
+    const Buffer& buf = it->second;
     if (buf.size != size || buf.compSize != compSize)
         throw std::runtime_error(mName + ": downloadAttrib: size mismatch!");
 
-    size_t totalSize = size * (size_t) compSize;
+    size_t totalSize = size * (size_t)compSize;
 
     if (name == "indices") {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buf.id);
@@ -233,12 +236,12 @@ void GLShader::downloadAttrib(const std::string &name, size_t size, int /* dim *
     }
 }
 
-void GLShader::shareAttrib(const GLShader &otherShader, const std::string &name, const std::string &_as) {
+void GLShader::shareAttrib(const GLShader& otherShader, const std::string& name, const std::string& _as) {
     std::string as = _as.length() == 0 ? name : _as;
     auto it = otherShader.mBufferObjects.find(name);
     if (it == otherShader.mBufferObjects.end())
         throw std::runtime_error("shareAttribute(" + otherShader.mName + ", " + name + "): attribute not found!");
-    const Buffer &buffer = it->second;
+    const Buffer& buffer = it->second;
 
     if (name != "indices") {
         int attribID = attrib(as);
@@ -253,11 +256,11 @@ void GLShader::shareAttrib(const GLShader &otherShader, const std::string &name,
 }
 
 void GLShader::invalidateAttribs() {
-    for (auto &buffer : mBufferObjects)
+    for (auto& buffer : mBufferObjects)
         buffer.second.version = -1;
 }
 
-void GLShader::freeAttrib(const std::string &name) {
+void GLShader::freeAttrib(const std::string& name) {
     auto it = mBufferObjects.find(name);
     if (it != mBufferObjects.end()) {
         glDeleteBuffers(1, &it->second.id);
@@ -272,12 +275,18 @@ void GLShader::drawIndexed(int type, uint32_t offset_, uint32_t count_) {
     size_t count = count_;
 
     switch (type) {
-        case GL_TRIANGLES: offset *= 3; count *= 3; break;
-        case GL_LINES: offset *= 2; count *= 2; break;
+    case GL_TRIANGLES:
+        offset *= 3;
+        count *= 3;
+        break;
+    case GL_LINES:
+        offset *= 2;
+        count *= 2;
+        break;
     }
 
-    glDrawElements(type, (GLsizei) count, GL_UNSIGNED_INT,
-                   (const void *)(offset * sizeof(uint32_t)));
+    glDrawElements(type, (GLsizei)count, GL_UNSIGNED_INT,
+                   (const void*)(offset * sizeof(uint32_t)));
 }
 
 void GLShader::drawArray(int type, uint32_t offset, uint32_t count) {
@@ -288,7 +297,7 @@ void GLShader::drawArray(int type, uint32_t offset, uint32_t count) {
 }
 
 void GLShader::free() {
-    for (auto &buf: mBufferObjects)
+    for (auto& buf : mBufferObjects)
         glDeleteBuffers(1, &buf.second.id);
     mBufferObjects.clear();
 
@@ -297,14 +306,18 @@ void GLShader::free() {
         mVertexArrayObject = 0;
     }
 
-    glDeleteProgram(mProgramShader); mProgramShader = 0;
-    glDeleteShader(mVertexShader);   mVertexShader = 0;
-    glDeleteShader(mFragmentShader); mFragmentShader = 0;
-    glDeleteShader(mGeometryShader); mGeometryShader = 0;
+    glDeleteProgram(mProgramShader);
+    mProgramShader = 0;
+    glDeleteShader(mVertexShader);
+    mVertexShader = 0;
+    glDeleteShader(mFragmentShader);
+    mFragmentShader = 0;
+    glDeleteShader(mGeometryShader);
+    mGeometryShader = 0;
 }
 
-const GLShader::Buffer &GLShader::attribBuffer(const std::string &name) {
-    for (auto &pair : mBufferObjects) {
+const GLShader::Buffer& GLShader::attribBuffer(const std::string& name) {
+    for (auto& pair : mBufferObjects) {
         if (pair.first == name)
             return pair.second;
     }
@@ -332,7 +345,7 @@ void GLUniformBuffer::free() {
     mID = 0;
 }
 
-void GLUniformBuffer::update(const std::vector<uint8_t> &data) {
+void GLUniformBuffer::update(const std::vector<uint8_t>& data) {
     glBindBuffer(GL_UNIFORM_BUFFER, mID);
     glBufferData(GL_UNIFORM_BUFFER, data.size(), data.data(), GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -340,7 +353,7 @@ void GLUniformBuffer::update(const std::vector<uint8_t> &data) {
 
 //  ----------------------------------------------------
 
-void GLFramebuffer::init(const Vector2i &size, int nSamples) {
+void GLFramebuffer::init(const Vector2i& size, int nSamples) {
     mSize = size;
     mSamples = nSamples;
 
@@ -406,10 +419,10 @@ void GLFramebuffer::blit() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void GLFramebuffer::downloadTGA(const std::string &filename) {
-    uint8_t *temp = new uint8_t[mSize.prod() * 4];
+void GLFramebuffer::downloadTGA(const std::string& filename) {
+    uint8_t* temp = new uint8_t[mSize.prod() * 4];
 
-    std::cout << "Writing \"" << filename  << "\" (" << mSize.x() << "x" << mSize.y() << ") .. ";
+    std::cout << "Writing \"" << filename << "\" (" << mSize.x() << "x" << mSize.y() << ") .. ";
     std::cout.flush();
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glBindFramebuffer(GL_READ_FRAMEBUFFER, mFramebuffer);
@@ -419,31 +432,35 @@ void GLFramebuffer::downloadTGA(const std::string &filename) {
 
     uint32_t rowSize = mSize.x() * 4;
     uint32_t halfHeight = mSize.y() / 2;
-    uint8_t *line = (uint8_t *) alloca(rowSize);
-    for (uint32_t i=0, j=mSize.y()-1; i<halfHeight; ++i) {
+    uint8_t* line = (uint8_t*)alloca(rowSize);
+    for (uint32_t i = 0, j = mSize.y() - 1; i < halfHeight; ++i) {
         memcpy(line, temp + i * rowSize, rowSize);
         memcpy(temp + i * rowSize, temp + j * rowSize, rowSize);
         memcpy(temp + j * rowSize, line, rowSize);
         j--;
     }
 
-    FILE *tga = fopen(filename.c_str(), "wb");
+    FILE* tga = fopen(filename.c_str(), "wb");
     if (tga == nullptr)
         throw std::runtime_error("GLFramebuffer::downloadTGA(): Could not open output file");
     fputc(0, tga); /* ID */
     fputc(0, tga); /* Color map */
     fputc(2, tga); /* Image type */
-    fputc(0, tga); fputc(0, tga); /* First entry of color map (unused) */
-    fputc(0, tga); fputc(0, tga); /* Length of color map (unused) */
+    fputc(0, tga);
+    fputc(0, tga); /* First entry of color map (unused) */
+    fputc(0, tga);
+    fputc(0, tga); /* Length of color map (unused) */
     fputc(0, tga); /* Color map entry size (unused) */
-    fputc(0, tga); fputc(0, tga);  /* X offset */
-    fputc(0, tga); fputc(0, tga);  /* Y offset */
+    fputc(0, tga);
+    fputc(0, tga); /* X offset */
+    fputc(0, tga);
+    fputc(0, tga);               /* Y offset */
     fputc(mSize.x() % 256, tga); /* Width */
     fputc(mSize.x() / 256, tga); /* continued */
     fputc(mSize.y() % 256, tga); /* Height */
     fputc(mSize.y() / 256, tga); /* continued */
-    fputc(32, tga);   /* Bits per pixel */
-    fputc(0x20, tga); /* Scan from top left */
+    fputc(32, tga);              /* Bits per pixel */
+    fputc(0x20, tga);            /* Scan from top left */
     fwrite(temp, mSize.prod() * 4, 1, tga);
     fclose(tga);
 
@@ -453,10 +470,10 @@ void GLFramebuffer::downloadTGA(const std::string &filename) {
 
 //  ----------------------------------------------------
 
-Eigen::Vector3f project(const Eigen::Vector3f &obj,
-                        const Eigen::Matrix4f &model,
-                        const Eigen::Matrix4f &proj,
-                        const Vector2i &viewportSize) {
+Eigen::Vector3f project(const Eigen::Vector3f& obj,
+                        const Eigen::Matrix4f& model,
+                        const Eigen::Matrix4f& proj,
+                        const Vector2i& viewportSize) {
     Eigen::Vector4f tmp;
     tmp << obj, 1;
 
@@ -472,10 +489,10 @@ Eigen::Vector3f project(const Eigen::Vector3f &obj,
     return tmp.head(3);
 }
 
-Eigen::Vector3f unproject(const Eigen::Vector3f &win,
-                          const Eigen::Matrix4f &model,
-                          const Eigen::Matrix4f &proj,
-                          const Vector2i &viewportSize) {
+Eigen::Vector3f unproject(const Eigen::Vector3f& win,
+                          const Eigen::Matrix4f& model,
+                          const Eigen::Matrix4f& proj,
+                          const Vector2i& viewportSize) {
     Eigen::Matrix4f Inverse = (proj * model).inverse();
 
     Eigen::Vector4f tmp;
@@ -490,9 +507,9 @@ Eigen::Vector3f unproject(const Eigen::Vector3f &win,
     return obj.head(3);
 }
 
-Eigen::Matrix4f lookAt(const Eigen::Vector3f &origin,
-                       const Eigen::Vector3f &target,
-                       const Eigen::Vector3f &up) {
+Eigen::Matrix4f lookAt(const Eigen::Vector3f& origin,
+                       const Eigen::Vector3f& target,
+                       const Eigen::Vector3f& up) {
     Eigen::Vector3f f = (target - origin).normalized();
     Eigen::Vector3f s = f.cross(up).normalized();
     Eigen::Vector3f u = s.cross(f);
@@ -539,11 +556,11 @@ Eigen::Matrix4f frustum(float left, float right, float bottom,
     return result;
 }
 
-Eigen::Matrix4f scale(const Eigen::Vector3f &v) {
+Eigen::Matrix4f scale(const Eigen::Vector3f& v) {
     return Eigen::Affine3f(Eigen::Scaling(v)).matrix();
 }
 
-Eigen::Matrix4f translate(const Eigen::Vector3f &v) {
+Eigen::Matrix4f translate(const Eigen::Vector3f& v) {
     return Eigen::Affine3f(Eigen::Translation<float, 3>(v)).matrix();
 }
 

@@ -16,22 +16,22 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-Slider::Slider(Widget *parent)
-    : Widget(parent), mValue(0.0f), mRange(0.f, 1.f),
-      mHighlightedRange(0.f, 0.f) {
+Slider::Slider(Widget* parent) :
+    Widget(parent), mValue(0.0f), mRange(0.f, 1.f),
+    mHighlightedRange(0.f, 0.f) {
     mHighlightColor = Color(255, 80, 80, 70);
 }
 
-Vector2i Slider::preferredSize(NVGcontext *) const {
+Vector2i Slider::preferredSize(NVGcontext*) const {
     return Vector2i(70, 16);
 }
 
-bool Slider::mouseDragEvent(const Vector2i &p, const Vector2i & /* rel */,
+bool Slider::mouseDragEvent(const Vector2i& p, const Vector2i& /* rel */,
                             int /* button */, int /* modifiers */) {
     if (!mEnabled)
         return false;
 
-    const float kr = (int) (mSize.y() * 0.4f), kshadow = 3;
+    const float kr = (int)(mSize.y() * 0.4f), kshadow = 3;
     const float startX = kr + kshadow + mPos.x() - 1;
     const float widthX = mSize.x() - 2 * (kr + kshadow);
 
@@ -43,11 +43,11 @@ bool Slider::mouseDragEvent(const Vector2i &p, const Vector2i & /* rel */,
     return true;
 }
 
-bool Slider::mouseButtonEvent(const Vector2i &p, int /* button */, bool down, int /* modifiers */) {
+bool Slider::mouseButtonEvent(const Vector2i& p, int /* button */, bool down, int /* modifiers */) {
     if (!mEnabled)
         return false;
 
-    const float kr = (int) (mSize.y() * 0.4f), kshadow = 3;
+    const float kr = (int)(mSize.y() * 0.4f), kshadow = 3;
     const float startX = kr + kshadow + mPos.x() - 1;
     const float widthX = mSize.x() - 2 * (kr + kshadow);
 
@@ -63,14 +63,13 @@ bool Slider::mouseButtonEvent(const Vector2i &p, int /* button */, bool down, in
 
 void Slider::draw(NVGcontext* ctx) {
     Vector2f center = mPos.cast<float>() + mSize.cast<float>() * 0.5f;
-    float kr = (int) (mSize.y() * 0.4f), kshadow = 3;
+    float kr = (int)(mSize.y() * 0.4f), kshadow = 3;
 
     float startX = kr + kshadow + mPos.x();
-    float widthX = mSize.x() - 2*(kr+kshadow);
+    float widthX = mSize.x() - 2 * (kr + kshadow);
 
-    Vector2f knobPos(startX + (mValue - mRange.first) /
-            (mRange.second - mRange.first) * widthX,
-            center.y() + 0.5f);
+    Vector2f knobPos(startX + (mValue - mRange.first) / (mRange.second - mRange.first) * widthX,
+                     center.y() + 0.5f);
 
     NVGpaint bg = nvgBoxGradient(
         ctx, startX, center.y() - 3 + 1, widthX, 6, 3, 3,
@@ -85,8 +84,7 @@ void Slider::draw(NVGcontext* ctx) {
         nvgBeginPath(ctx);
         nvgRoundedRect(ctx, startX + mHighlightedRange.first * mSize.x(),
                        center.y() - kshadow + 1,
-                       widthX *
-                           (mHighlightedRange.second - mHighlightedRange.first),
+                       widthX * (mHighlightedRange.second - mHighlightedRange.first),
                        kshadow * 2, 2);
         nvgFillColor(ctx, mHighlightColor);
         nvgFill(ctx);
@@ -105,12 +103,12 @@ void Slider::draw(NVGcontext* ctx) {
     nvgFill(ctx);
 
     NVGpaint knob = nvgLinearGradient(ctx,
-        mPos.x(), center.y() - kr, mPos.x(), center.y() + kr,
-        mTheme->mBorderLight, mTheme->mBorderMedium);
+                                      mPos.x(), center.y() - kr, mPos.x(), center.y() + kr,
+                                      mTheme->mBorderLight, mTheme->mBorderMedium);
     NVGpaint knobReverse = nvgLinearGradient(ctx,
-        mPos.x(), center.y() - kr, mPos.x(), center.y() + kr,
-        mTheme->mBorderMedium,
-        mTheme->mBorderLight);
+                                             mPos.x(), center.y() - kr, mPos.x(), center.y() + kr,
+                                             mTheme->mBorderMedium,
+                                             mTheme->mBorderLight);
 
     nvgBeginPath(ctx);
     nvgCircle(ctx, knobPos.x(), knobPos.y(), kr);
@@ -119,14 +117,14 @@ void Slider::draw(NVGcontext* ctx) {
     nvgStroke(ctx);
     nvgFill(ctx);
     nvgBeginPath(ctx);
-    nvgCircle(ctx, knobPos.x(), knobPos.y(), kr/2);
+    nvgCircle(ctx, knobPos.x(), knobPos.y(), kr / 2);
     nvgFillColor(ctx, Color(150, mEnabled ? 255 : 100));
     nvgStrokePaint(ctx, knobReverse);
     nvgStroke(ctx);
     nvgFill(ctx);
 }
 
-void Slider::save(Serializer &s) const {
+void Slider::save(Serializer& s) const {
     Widget::save(s);
     s.set("value", mValue);
     s.set("range", mRange);
@@ -134,7 +132,7 @@ void Slider::save(Serializer &s) const {
     s.set("highlightColor", mHighlightColor);
 }
 
-bool Slider::load(Serializer &s) {
+bool Slider::load(Serializer& s) {
     if (!Widget::load(s)) return false;
     if (!s.get("value", mValue)) return false;
     if (!s.get("range", mRange)) return false;
