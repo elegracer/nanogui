@@ -173,7 +173,16 @@ set(NANOGUI_PRIVATE_SOURCES
 
 add_library(nanogui)
 target_compile_definitions(nanogui
-    PRIVATE ${NANOGUI_EXTRA_DEFS})
+    PRIVATE ${NANOGUI_EXTRA_DEFS}
+)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(nanogui
+        PRIVATE
+            -Qunused-arguments
+            -mllvm
+            -inline-threshold=5000
+    )
+endif()
 set_target_properties(nanogui PROPERTIES CXX_EXTENSIONS OFF) # -std=c++17 instead of -std=g++17
 target_sources(nanogui
     PRIVATE
