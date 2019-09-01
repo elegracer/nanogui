@@ -173,7 +173,7 @@ set(NANOGUI_PRIVATE_SOURCES
 
 add_library(nanogui)
 target_compile_definitions(nanogui
-    PRIVATE ${NANOGUI_EXTRA_DEFS}
+    PRIVATE ${NANOGUI_EXTRA_DEFS} -DGL_SILENCE_DEPRECATION
 )
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(nanogui
