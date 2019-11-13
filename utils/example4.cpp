@@ -57,7 +57,12 @@
 #if defined(APIENTRY)
 #undef APIENTRY
 #endif
+#ifndef NOMINMAX
+#define NOMINMAX 1
+#endif
 #include <windows.h>
+#undef far
+#undef near
 #endif
 
 using std::cout;
