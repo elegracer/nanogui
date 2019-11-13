@@ -34,11 +34,20 @@ set(NANOGUI_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 # set(NANOGUI_TEST_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 # some build options
+
+if(WIN32)
+    set(NANOGUI_USE_GLAD_DEFAULT ON)
+else()
+    set(NANOGUI_USE_GLAD_DEFAULT OFF)
+endif()
+
 option(NANOGUI_BUILD_EXAMPLE "Build NanoGUI example application" ON)
 # option(NANOGUI_BUILD_SHARED  "Build NanoGUI as a shared library" ON)
+option(NANOGUI_USE_GLAD "Use Glad OpenGL loader library?" ${NANOGUI_USE_GLAD_DEFAULT})
 
 set(NANOGUI_EXTRA_DEFS "")
 set(NANOGUI_EXTRA_LIBS "")
+set(NANOGUI_EXTRA_INCS "")
 
 set(LIBNANOGUI_EXTRA_SOURCE "")
 
@@ -48,8 +57,24 @@ set(LIBNANOGUI_EXTRA_SOURCE "")
 
 list(APPEND NANOGUI_EXTRA_DEFS -DNANOGUI_BUILD -DNVG_BUILD -DNVG_STB_IMAGE_IMPLEMENTATION)
 
+if (NANOGUI_USE_GLAD)
+    list(APPEND LIBNANOGUI_EXTRA_SOURCE
+        "${CMAKE_CURRENT_SOURCE_DIR}/ext/glad/src/glad.c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/ext/glad/include/glad/glad.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/ext/glad/include/KHR/khrplatform.h"
+    )
+    if (MSVC)
+      set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/ext/glad/src/glad.c"
+        PROPERTIES COMPILE_FLAGS "/wd4055")
+    endif()
+    list(APPEND NANOGUI_EXTRA_DEFS -DNANOGUI_GLAD)
+    list(APPEND NANOGUI_EXTRA_INCS "${CMAKE_CURRENT_SOURCE_DIR}/ext/glad/include")
+endif()
+
 # Required core libraries on various platforms
-if (APPLE)
+if (WIN32)
+    list(APPEND NANOGUI_EXTRA_LIBS opengl32)
+elseif (APPLE)
     find_library(cocoa_library Cocoa)
     find_library(opengl_library OpenGL)
     find_library(corevideo_library CoreVideo)
@@ -173,14 +198,29 @@ set(NANOGUI_PRIVATE_SOURCES
 
 add_library(nanogui)
 target_compile_definitions(nanogui
-    PRIVATE ${NANOGUI_EXTRA_DEFS} -DGL_SILENCE_DEPRECATION
+    PUBLIC
+        ${NANOGUI_EXTRA_DEFS}
+        -DGL_SILENCE_DEPRECATION
 )
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(nanogui
-        PRIVATE
+        PUBLIC
             -Qunused-arguments
             -mllvm
             -inline-threshold=5000
+    )
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    target_compile_definitions(nanogui
+        PUBLIC
+            _CRT_SECURE_NO_WARNINGS
+    )
+    target_compile_options(nanogui
+        PUBLIC
+            /MP
+            $<$<NOT:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>>:
+                /arch:SSE2
+                /DNANOGUI_EIGEN_DONT_ALIGN
+            >
     )
 endif()
 set_target_properties(nanogui PROPERTIES CXX_EXTENSIONS OFF) # -std=c++17 instead of -std=g++17
@@ -194,6 +234,7 @@ target_sources(nanogui
 target_include_directories(nanogui
     PUBLIC
         ${NANOGUI_INCLUDE_DIR}
+        ${NANOGUI_EXTRA_INCS}
         # ${NANOGUI_BINARY_INCLUDE_DIR}
         ${CMAKE_CURRENT_BINARY_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/ext/nanovg
