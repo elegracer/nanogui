@@ -12,16 +12,28 @@ if(CCACHE_FOUND)
 endif(CCACHE_FOUND)
 
 include(CMakeDependentOption)
-# superbuild settings
-include(SuperBuildDepends)
+# # superbuild settings
+# include(SuperBuildDepends)
 
-# cpp standard settings
-superbuild_option(cpp17)
-superbuild_option(modern-cpp)
+# # cpp standard settings
+# superbuild_option(cpp17)
+# superbuild_option(modern-cpp)
 
-# dependencies settings
-superbuild_depend(eigen)
-superbuild_depend(glfw)
+# # dependencies settings
+# superbuild_depend(eigen)
+# superbuild_depend(glfw)
+
+if(NOT TARGET options::modern-cpp)
+    message(FATAL_ERROR "Target options::modern-cpp not defined!")
+endif()
+
+if(NOT TARGET depends::eigen)
+    message(FATAL_ERROR "Target depends::eigen not defined!")
+endif()
+
+if(NOT TARGET depends::glfw)
+    message(FATAL_ERROR "Target depends::glfw not defined!")
+endif()
 
 # always generate PIC code, no matter static or shared library
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -248,6 +260,9 @@ target_link_libraries(nanogui
         depends::glfw
         ${NANOGUI_EXTRA_LIBS}
 )
+
+add_library(depends::nanogui INTERFACE IMPORTED GLOBAL)
+target_link_libraries(depends::nanogui INTERFACE nanogui)
 
 set(NANOGUI_LIBRARY_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE INTERNAL "")
 
